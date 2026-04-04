@@ -16,22 +16,30 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    'bg-forest-700 text-white hover:bg-forest-600 active:bg-forest-800 shadow-nature hover:shadow-nature-md',
+    'text-white hover:opacity-80 active:opacity-90',
   secondary:
-    'bg-forest-100 text-forest-800 hover:bg-forest-200 active:bg-forest-300',
+    'hover:opacity-80',
   ghost:
-    'bg-transparent text-forest-700 hover:bg-forest-50 active:bg-forest-100',
+    'bg-transparent hover:opacity-70',
   amber:
-    'bg-amber-500 text-white hover:bg-amber-400 active:bg-amber-600 shadow-amber hover:shadow-lg',
+    'text-white hover:opacity-80',
   outline:
-    'border-2 border-forest-300 text-forest-700 hover:border-forest-500 hover:bg-forest-50 bg-white/50',
+    'bg-transparent hover:opacity-80',
+};
+
+const variantInline: Record<Variant, React.CSSProperties> = {
+  primary:   { background: 'var(--moss)', color: 'white', border: 'none' },
+  secondary: { background: 'var(--stone-mid)', color: 'var(--ink)', border: 'none' },
+  ghost:     { background: 'transparent', color: 'var(--ink-md)', border: 'none' },
+  amber:     { background: 'var(--cognac)', color: 'white', border: 'none' },
+  outline:   { background: 'transparent', color: 'var(--ink)', border: '1px solid var(--stone-mid)' },
 };
 
 const sizeStyles: Record<Size, string> = {
-  sm:  'px-4 py-2 text-sm gap-1.5',
+  sm:  'px-4 py-2 text-xs gap-1.5',
   md:  'px-6 py-2.5 text-sm gap-2',
-  lg:  'px-8 py-3 text-base gap-2',
-  xl:  'px-10 py-4 text-lg gap-2.5',
+  lg:  'px-8 py-3 text-sm gap-2',
+  xl:  'px-10 py-4 text-base gap-2.5',
 };
 
 export function Button({
@@ -44,6 +52,7 @@ export function Button({
   children,
   disabled,
   className = '',
+  style,
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || loading;
@@ -52,15 +61,16 @@ export function Button({
     <button
       disabled={isDisabled}
       className={[
-        'btn-pill font-semibold transition-all duration-200 select-none',
+        'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 select-none',
         variantStyles[variant],
         sizeStyles[size],
         fullWidth ? 'w-full' : '',
-        isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
+        isDisabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : '',
         className,
       ]
         .filter(Boolean)
         .join(' ')}
+      style={{ ...variantInline[variant], ...style }}
       {...props}
     >
       {loading ? (

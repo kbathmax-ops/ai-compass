@@ -50,11 +50,12 @@ export function RoleBadge({ size = 'sm' }: { size?: 'sm' | 'md' }) {
   return (
     <span
       className={[
-        'tag-chip font-semibold bg-amber-100 text-amber-800',
+        'tag-chip font-medium',
         size === 'sm' ? 'text-xs px-2.5 py-1' : 'text-sm px-3 py-1.5',
       ].join(' ')}
+      style={{ border: '1px solid var(--cognac)', color: 'var(--cognac)' }}
     >
-      💼 Business Owner
+      Business Owner
     </span>
   );
 }

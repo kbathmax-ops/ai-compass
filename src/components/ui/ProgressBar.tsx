@@ -19,15 +19,15 @@ const heightMap = {
 };
 
 const colorMap = {
-  forest: 'bg-forest-500',
-  amber:  'bg-amber-500',
-  teal:   'bg-teal-500',
+  forest: 'bg-moss-500',
+  amber:  'bg-cognac',
+  teal:   'bg-moss-400',
 };
 
 const trackColorMap = {
-  forest: 'bg-forest-100',
-  amber:  'bg-amber-100',
-  teal:   'bg-teal-100',
+  forest: 'bg-stone-300',
+  amber:  'bg-stone-300',
+  teal:   'bg-stone-300',
 };
 
 export function ProgressBar({
@@ -57,10 +57,10 @@ export function ProgressBar({
       {(label || showPercentage) && (
         <div className="flex justify-between items-center mb-1.5">
           {label && (
-            <span className="text-xs font-medium text-forest-600">{label}</span>
+            <span className="text-xs font-medium" style={{ color: 'var(--ink-muted)' }}>{label}</span>
           )}
           {showPercentage && (
-            <span className="text-xs font-semibold text-forest-700">
+            <span className="text-xs font-medium" style={{ color: 'var(--ink-md)' }}>
               {Math.round(clampedValue)}%
             </span>
           )}
@@ -129,8 +129,8 @@ export function CircularProgress({
       </svg>
       {label && (
         <span
-          className="absolute text-xs font-bold text-forest-800"
-          style={{ transform: 'rotate(0deg)' }}
+          className="absolute text-xs font-bold"
+          style={{ transform: 'rotate(0deg)', color: 'var(--ink)' }}
         >
           {label}
         </span>

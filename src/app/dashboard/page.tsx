@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { getLessons, getGoals, getRecommendedLesson } from '@/data/lessons';
-import { LessonCard } from '@/components/lessons/LessonCard';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { RoleBadge } from '@/components/ui/Tag';
 import type { Lesson } from '@/types';
 
 export default function DashboardPage() {
@@ -27,172 +24,294 @@ export default function DashboardPage() {
     lessons.some(l => l.id === id),
   ).length;
   const totalCount = lessons.length;
-  const progressPercent = Math.round((completedCount / totalCount) * 100);
   const nextLesson = getRecommendedLesson(progress.completedLessons);
 
-  const greeting = getGreeting();
-
   return (
-    <div className="min-h-screen pt-20 pb-24 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header section */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 animate-fade-in">
-          <div>
-            <p className="text-sm font-semibold text-forest-500 uppercase tracking-widest mb-2">
-              {greeting}
-            </p>
-            <h1 className="text-4xl font-black text-forest-950 mb-3 leading-tight">
-              Your AI Journey
+    <div className="min-h-screen pt-20 pb-24" style={{ background: 'var(--stone)', color: 'var(--ink)' }}>
+      <div className="max-w-4xl mx-auto px-8 sm:px-14">
+
+        {/* ── Page header ────────────────────────────────────────────── */}
+        <div className="pt-8 pb-10" style={{ borderBottom: '1px solid var(--stone-mid)' }}>
+          <p className="text-xs font-medium tracking-[0.3em] uppercase mb-3" style={{ color: 'var(--cognac)' }}>
+            Your curriculum
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <h1
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                lineHeight: 1.0,
+                fontWeight: 600,
+                letterSpacing: '-0.02em',
+                color: 'var(--ink)',
+              }}
+            >
+              {completedCount === 0
+                ? <>Your <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>journey</em> begins.</>
+                : completedCount === totalCount
+                ? <>Journey <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>complete.</em></>
+                : <>Day {completedCount + 1} <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>awaits.</em></>
+              }
             </h1>
-            <div className="flex items-center gap-2 flex-wrap">
-              <RoleBadge />
-              {progress.streak > 0 && (
-                <span className="text-xs font-semibold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">
-                  🔥 {progress.streak} day streak
-                </span>
-              )}
+
+            {/* Progress fraction */}
+            <div className="flex items-end gap-4 flex-shrink-0">
+              <div className="text-right">
+                <div
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '2.5rem',
+                    fontWeight: 600,
+                    lineHeight: 1,
+                    color: 'var(--ink)',
+                  }}
+                >
+                  {completedCount}<span style={{ color: 'var(--stone-dk)', fontSize: '1.5rem' }}>/{totalCount}</span>
+                </div>
+                <div className="text-xs tracking-wider mt-1" style={{ color: 'var(--ink-muted)' }}>
+                  lessons complete
+                </div>
+              </div>
+              {/* Thin progress bar */}
+              <div className="w-24 mb-3">
+                <div className="h-px w-full" style={{ background: 'var(--stone-mid)' }}>
+                  <div
+                    className="h-px transition-all duration-700"
+                    style={{
+                      width: `${Math.round((completedCount / totalCount) * 100)}%`,
+                      background: 'var(--cognac)',
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Overall progress circle */}
-          <div className="flex-shrink-0 glass-card rounded-2xl px-6 py-4 flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-3xl font-black text-forest-800">{completedCount}</div>
-              <div className="text-xs text-forest-500 font-medium">of {totalCount}</div>
-              <div className="text-xs text-forest-400">lessons done</div>
-            </div>
-            <div className="w-px h-12 bg-forest-100" />
-            <div className="min-w-32">
-              <ProgressBar
-                value={progressPercent}
-                label={`${progressPercent}% complete`}
-                showPercentage={false}
-                size="md"
-                color="forest"
-              />
-              {completedCount === 0 && (
-                <p className="text-xs text-forest-400 mt-1.5">Start Day 1 to begin</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* "Next up" banner — if not all done */}
-        {nextLesson && completedCount > 0 && (
-          <NextUpBanner lesson={nextLesson} />
-        )}
-
-        {/* Goals reminder */}
-        {goals.length > 0 && (
-          <div className="mb-8 animate-slide-up animation-delay-100">
-            <p className="text-xs font-semibold text-forest-500 uppercase tracking-wider mb-3">
-              Your goals
-            </p>
-            <div className="flex flex-wrap gap-2">
+          {/* Goals pills */}
+          {goals.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-5">
               {goals.map(g => (
                 <span
                   key={g.id}
-                  className="glass-card text-xs font-medium text-forest-700 px-3 py-1.5 rounded-xl border border-forest-100 flex items-center gap-1.5"
+                  className="flex items-center gap-1.5 text-xs"
+                  style={{
+                    padding: '4px 12px',
+                    border: '1px solid var(--stone-mid)',
+                    color: 'var(--ink-md)',
+                  }}
                 >
                   <span>{g.icon}</span>
                   {g.label}
                 </span>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Curriculum heading */}
-        <div className="mb-6 animate-slide-up animation-delay-200">
-          <h2 className="text-2xl font-black text-forest-900">
-            Your Curriculum
-          </h2>
-          <p className="text-sm text-forest-500 mt-1">
-            7 focused lessons · 15–35 min each · builds week over week
-          </p>
+          )}
         </div>
 
-        {/* Lesson cards grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-slide-up animation-delay-300">
-          {lessons.map((lesson, idx) => {
-            const isCompleted = progress.completedLessons.includes(lesson.id);
-            // Lock lessons that are 2+ ahead of the furthest completed
-            const isLocked = !isCompleted && idx > completedCount + 1;
+        {/* ── Next up banner ──────────────────────────────────────────── */}
+        {nextLesson && completedCount > 0 && (
+          <Link href={`/lesson/${nextLesson.id}`} className="block mt-8">
+            <div
+              className="flex items-center justify-between gap-4 p-6 transition-opacity duration-200 hover:opacity-80"
+              style={{ background: 'var(--moss)', color: 'white' }}
+            >
+              <div>
+                <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  Up next
+                </p>
+                <h3 className="font-medium text-base">
+                  Day {nextLesson.day} — {nextLesson.title}
+                </h3>
+                <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                  {nextLesson.subtitle}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  {nextLesson.estimatedMinutes} min
+                </span>
+                <div
+                  className="w-9 h-9 flex items-center justify-center"
+                  style={{ border: '1px solid rgba(255,255,255,0.25)' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 8h10M9 4l4 4-4 4" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </Link>
+        )}
 
-            return (
-              <LessonCard
-                key={lesson.id}
-                lesson={lesson}
-                isCompleted={isCompleted}
-                isLocked={isLocked}
-              />
-            );
-          })}
+        {/* First lesson prompt when nothing completed */}
+        {completedCount === 0 && nextLesson && (
+          <Link href={`/lesson/${nextLesson.id}`} className="block mt-8">
+            <div
+              className="flex items-center justify-between gap-4 p-6 transition-opacity duration-200 hover:opacity-80"
+              style={{ background: 'var(--moss)', color: 'white' }}
+            >
+              <div>
+                <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  Start here
+                </p>
+                <h3 className="font-medium text-base">
+                  Day {nextLesson.day} — {nextLesson.title}
+                </h3>
+                <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                  {nextLesson.subtitle}
+                </p>
+              </div>
+              <div
+                className="w-9 h-9 flex items-center justify-center flex-shrink-0"
+                style={{ border: '1px solid rgba(255,255,255,0.25)' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </div>
+            </div>
+          </Link>
+        )}
+
+        {/* ── Lesson list ─────────────────────────────────────────────── */}
+        <div className="mt-10">
+          <p className="text-xs font-medium tracking-[0.25em] uppercase mb-6" style={{ color: 'var(--ink-muted)' }}>
+            All 7 lessons
+          </p>
+
+          <div className="flex flex-col" style={{ gap: '1px', background: 'var(--stone-mid)' }}>
+            {lessons.map((lesson, idx) => {
+              const isCompleted = progress.completedLessons.includes(lesson.id);
+              const isLocked = !isCompleted && idx > completedCount + 1;
+              const isCurrent = !isCompleted && idx === completedCount;
+
+              return (
+                <LessonRow
+                  key={lesson.id}
+                  lesson={lesson}
+                  isCompleted={isCompleted}
+                  isLocked={isLocked}
+                  isCurrent={isCurrent}
+                />
+              );
+            })}
+          </div>
         </div>
 
         {/* Completion state */}
         {completedCount === totalCount && (
-          <CompletionBanner />
+          <div className="mt-12 py-10 text-center" style={{ borderTop: '1px solid var(--stone-mid)' }}>
+            <p className="text-xs tracking-[0.25em] uppercase mb-3" style={{ color: 'var(--cognac)' }}>
+              Curriculum complete
+            </p>
+            <h3
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '2rem',
+                fontWeight: 600,
+                color: 'var(--ink)',
+              }}
+            >
+              You&rsquo;ve done the work.
+            </h3>
+            <p className="text-sm mt-3 max-w-sm mx-auto" style={{ color: 'var(--ink-md)' }}>
+              Return to any lesson to review or deepen your practice.
+            </p>
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-// ─── Next up banner ───────────────────────────────────────────────────────────
+// ─── Lesson row ───────────────────────────────────────────────────────────────
 
-function NextUpBanner({ lesson }: { lesson: Lesson }) {
+function LessonRow({
+  lesson,
+  isCompleted,
+  isLocked,
+  isCurrent,
+}: {
+  lesson: Lesson;
+  isCompleted: boolean;
+  isLocked: boolean;
+  isCurrent: boolean;
+}) {
+  const content = (
+    <div
+      className="flex items-center gap-6 px-6 py-5 transition-colors duration-150"
+      style={{
+        background: isCompleted
+          ? 'rgba(184,116,46,0.03)'
+          : isCurrent
+          ? 'var(--stone-lt, #f5f2ed)'
+          : 'var(--stone)',
+        opacity: isLocked ? 0.4 : 1,
+        cursor: isLocked ? 'default' : 'pointer',
+      }}
+    >
+      {/* Day indicator */}
+      <div
+        className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-xs font-medium"
+        style={{
+          border: isCompleted
+            ? '1px solid var(--cognac)'
+            : '1px solid var(--stone-mid)',
+          color: isCompleted ? 'var(--cognac)' : 'var(--ink-muted)',
+        }}
+      >
+        {isCompleted ? '✓' : lesson.day}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <h3
+          className="font-medium text-sm leading-snug"
+          style={{ color: isLocked ? 'var(--ink-muted)' : 'var(--ink)' }}
+        >
+          {lesson.title}
+        </h3>
+        <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--ink-muted)' }}>
+          {lesson.subtitle}
+        </p>
+      </div>
+
+      {/* Meta */}
+      <div className="flex-shrink-0 flex items-center gap-4">
+        <span className="text-xs hidden sm:block" style={{ color: 'var(--ink-muted)' }}>
+          {lesson.estimatedMinutes} min
+        </span>
+        {isCurrent && (
+          <span
+            className="text-xs font-medium tracking-wide hidden sm:block"
+            style={{ color: 'var(--cognac)' }}
+          >
+            Start →
+          </span>
+        )}
+        {isCompleted && (
+          <span
+            className="text-xs tracking-wide hidden sm:block"
+            style={{ color: 'var(--cognac)' }}
+          >
+            Review →
+          </span>
+        )}
+        {isLocked && (
+          <span className="text-xs" style={{ color: 'var(--stone-dk)' }}>🔒</span>
+        )}
+      </div>
+    </div>
+  );
+
+  if (isLocked) return <div>{content}</div>;
+
   return (
     <Link
       href={`/lesson/${lesson.id}`}
-      className="block mb-8 animate-scale-in"
+      className="block hover:brightness-[0.97] transition-all duration-150"
     >
-      <div className="glass-card-dark rounded-2xl p-6 flex items-center justify-between gap-4 hover:opacity-90 transition-opacity">
-        <div>
-          <p className="text-xs font-semibold text-forest-200 uppercase tracking-widest mb-1">
-            Up next
-          </p>
-          <h3 className="text-xl font-black text-white">
-            Day {lesson.day}: {lesson.title}
-          </h3>
-          <p className="text-sm text-forest-300 mt-1">{lesson.subtitle}</p>
-        </div>
-        <div className="flex-shrink-0 flex flex-col items-end gap-2">
-          <span className="text-xs font-medium text-forest-300">
-            ⏱ {lesson.estimatedMinutes} min
-          </span>
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold text-lg">
-            →
-          </div>
-        </div>
-      </div>
+      {content}
     </Link>
   );
-}
-
-// ─── Completion banner ────────────────────────────────────────────────────────
-
-function CompletionBanner() {
-  return (
-    <div className="mt-10 glass-card rounded-3xl p-8 text-center animate-scale-in">
-      <div className="text-5xl mb-4">🌿</div>
-      <h3 className="text-2xl font-black text-forest-900 mb-2">
-        You&rsquo;ve completed the full curriculum!
-      </h3>
-      <p className="text-forest-600 max-w-md mx-auto text-sm">
-        You now have a solid foundation in practical AI — with the critical thinking skills
-        to use it wisely. Return to any lesson to review or deepen your practice.
-      </p>
-      {/* TODO: Add "Next level" path or link to advanced curriculum once available */}
-    </div>
-  );
-}
-
-// ─── Utility ──────────────────────────────────────────────────────────────────
-
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
 }

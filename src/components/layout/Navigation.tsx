@@ -3,13 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { RoleBadge } from '@/components/ui/Tag';
 import { getLessons } from '@/data/lessons';
-
-const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Learn', icon: BookIcon },
-  { href: '/profile',   label: 'Progress', icon: ChartIcon },
-];
 
 export function Navigation() {
   const pathname = usePathname();
@@ -27,69 +21,86 @@ export function Navigation() {
   return (
     <>
       {/* Desktop top nav */}
-      <nav className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-16 glass-card border-b border-white/50">
-        <div className="max-w-5xl mx-auto px-6 w-full flex items-center justify-between">
-          {/* Logo */}
+      <nav
+        className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-14"
+        style={{
+          background: 'var(--stone)',
+          borderBottom: '1px solid var(--stone-mid)',
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-8 sm:px-14 w-full flex items-center justify-between">
+          {/* Wordmark */}
           <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl bg-forest-700 flex items-center justify-center shadow-nature group-hover:bg-forest-600 transition-colors">
-              <CompassIcon className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-forest-900 text-lg tracking-tight">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" style={{ color: 'var(--cognac)' }}>
+              <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="9" cy="9" r="1.5" fill="currentColor" />
+            </svg>
+            <span
+              className="text-xs font-medium tracking-[0.22em] uppercase"
+              style={{ color: 'var(--ink-md)' }}
+            >
               AI Compass
             </span>
           </Link>
 
           {/* Nav links */}
-          <div className="flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          <div className="flex items-center gap-6">
+            {[
+              { href: '/dashboard', label: 'Curriculum' },
+              { href: '/profile', label: 'Progress' },
+            ].map(({ href, label }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={[
-                    'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200',
-                    isActive
-                      ? 'bg-forest-100 text-forest-800'
-                      : 'text-forest-600 hover:text-forest-800 hover:bg-forest-50',
-                  ].join(' ')}
+                  className="text-xs tracking-wider transition-opacity duration-200"
+                  style={{
+                    color: isActive ? 'var(--cognac)' : 'var(--ink-muted)',
+                    fontWeight: isActive ? 500 : 400,
+                    opacity: isActive ? 1 : 0.7,
+                  }}
                 >
-                  <Icon className="w-4 h-4" />
-                  {label}
+                  {label.toUpperCase()}
                 </Link>
               );
             })}
           </div>
 
-          {/* Right side: role + progress */}
-          <div className="flex items-center gap-3">
-            <div className="text-xs text-forest-600 font-medium">
-              {completedCount}/{totalCount} lessons
-            </div>
-            <RoleBadge />
+          {/* Progress counter */}
+          <div className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+            {completedCount}/{totalCount}
           </div>
         </div>
       </nav>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-white/50 safe-area-pb">
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50"
+        style={{
+          background: 'var(--stone)',
+          borderTop: '1px solid var(--stone-mid)',
+        }}
+      >
         <div className="flex">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          {[
+            { href: '/dashboard', label: 'Curriculum', icon: <BookIcon /> },
+            { href: '/profile', label: 'Progress', icon: <ChartIcon /> },
+          ].map(({ href, label, icon }) => {
             const isActive = pathname.startsWith(href);
             return (
               <Link
                 key={href}
                 href={href}
-                className={[
-                  'flex-1 flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors',
-                  isActive ? 'text-forest-700' : 'text-forest-400',
-                ].join(' ')}
+                className="flex-1 flex flex-col items-center gap-1 py-3"
+                style={{
+                  color: isActive ? 'var(--cognac)' : 'var(--ink-muted)',
+                }}
               >
-                <Icon className="w-5 h-5" />
-                {label}
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-forest-600 rounded-full" />
-                )}
+                {icon}
+                <span className="text-[10px] tracking-wider uppercase">{label}</span>
               </Link>
             );
           })}
@@ -99,29 +110,18 @@ export function Navigation() {
   );
 }
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
-
-function CompassIcon({ className }: { className?: string }) {
+function BookIcon() {
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <circle cx="12" cy="12" r="10" />
-      <path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z" />
-    </svg>
-  );
-}
-
-function BookIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
   );
 }
 
-function ChartIcon({ className }: { className?: string }) {
+function ChartIcon() {
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path d="M3 3v18h18" />
       <path d="m19 9-5 5-4-4-3 3" />
     </svg>

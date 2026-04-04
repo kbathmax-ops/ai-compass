@@ -74,6 +74,21 @@ const config: Config = {
         success: { DEFAULT: '#2d6a4f', light: '#40916c', dark: '#1b4332', contrast: '#ffffff' },
         warning: { DEFAULT: '#e9a24b', light: '#f4c07a', dark: '#c17d2a', contrast: '#1a1714' },
         error:   { DEFAULT: '#c1440e', light: '#e06030', dark: '#8c3008', contrast: '#ffffff' },
+        // Forest — alias to moss (legacy compat for internal pages)
+        forest: {
+          50:  '#eef3f0',
+          100: '#cce0d4',
+          200: '#99c1a9',
+          300: '#66a27e',
+          400: '#3d7d59',
+          500: '#265c3f',
+          600: '#1F3528',
+          700: '#162718',
+          800: '#0e1a10',
+          900: '#070d08',
+          950: '#030604',
+          DEFAULT: '#1F3528',
+        },
       },
 
       // ── Typography ───────────────────────────────────────────────────────────
@@ -127,13 +142,17 @@ const config: Config = {
 
       // ── Shadows (warm-tinted, subtle) ────────────────────────────────────────
       boxShadow: {
-        sm:      '0 1px 2px rgba(42, 37, 32, 0.08)',
-        DEFAULT: '0 2px 4px rgba(42, 37, 32, 0.10)',
-        md:      '0 4px 12px rgba(42, 37, 32, 0.10)',
-        lg:      '0 8px 24px rgba(42, 37, 32, 0.12)',
-        xl:      '0 16px 48px rgba(42, 37, 32, 0.14)',
-        cognac:  '0 4px 20px rgba(184, 116, 46, 0.25)',
-        inset:   'inset 0 1px 3px rgba(42, 37, 32, 0.08)',
+        sm:           '0 1px 2px rgba(42, 37, 32, 0.08)',
+        DEFAULT:      '0 2px 4px rgba(42, 37, 32, 0.10)',
+        md:           '0 4px 12px rgba(42, 37, 32, 0.10)',
+        lg:           '0 8px 24px rgba(42, 37, 32, 0.12)',
+        xl:           '0 16px 48px rgba(42, 37, 32, 0.14)',
+        cognac:       '0 4px 20px rgba(184, 116, 46, 0.25)',
+        inset:        'inset 0 1px 3px rgba(42, 37, 32, 0.08)',
+        // Legacy compat
+        nature:       '0 2px 8px rgba(31, 53, 40, 0.10)',
+        'nature-md':  '0 4px 16px rgba(31, 53, 40, 0.12)',
+        amber:        '0 4px 16px rgba(233, 162, 75, 0.25)',
       },
 
       // ── Animation ────────────────────────────────────────────────────────────

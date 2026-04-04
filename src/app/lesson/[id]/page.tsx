@@ -21,7 +21,6 @@ export default function LessonPage() {
 
   const lesson = getLessonById(lessonId);
 
-  // Local lesson state
   const [reflections, setReflections] = useState<Record<string, string>>({});
   const [ctAnswers, setCtAnswers] = useState<string[]>([]);
   const [activeStepIdx, setActiveStepIdx] = useState(0);
@@ -35,25 +34,22 @@ export default function LessonPage() {
   }, [onboardingComplete, router]);
 
   useEffect(() => {
-    if (isAlreadyDone) {
-      setCompleted(true);
-    }
+    if (isAlreadyDone) setCompleted(true);
   }, [isAlreadyDone]);
 
   if (!lesson || !role) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--stone)' }}>
         <div className="text-center">
-          <p className="text-forest-600 mb-4">Lesson not found.</p>
-          <Link href="/dashboard" className="text-forest-700 font-semibold hover:underline">
-            ← Back to dashboard
+          <p className="text-sm mb-4" style={{ color: 'var(--ink-md)' }}>Lesson not found.</p>
+          <Link href="/dashboard" className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: 'var(--cognac)' }}>
+            ← Back to curriculum
           </Link>
         </div>
       </div>
     );
   }
 
-  // Compute what the "next lesson" is
   const allLessons = getLessons();
   const currentIdx = allLessons.findIndex(l => l.id === lessonId);
   const nextLesson = allLessons[currentIdx + 1] ?? null;
@@ -82,25 +78,26 @@ export default function LessonPage() {
     }
     setCompleted(true);
     setShowCompletion(true);
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-28 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Back link + metadata strip */}
-        <div className="flex items-center gap-3 mb-8 animate-fade-in">
+    <div className="min-h-screen pt-20 pb-28 px-4" style={{ background: 'var(--stone)' }}>
+      <div className="max-w-5xl mx-auto px-4 sm:px-10">
+
+        {/* Back link + metadata */}
+        <div className="flex items-center gap-3 mb-8 pt-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 text-sm text-forest-500 hover:text-forest-700 transition-colors"
+            className="flex items-center gap-1.5 text-xs tracking-wider hover:opacity-70 transition-opacity"
+            style={{ color: 'var(--ink-muted)' }}
           >
-            <span>←</span> Curriculum
+            ← Curriculum
           </Link>
-          <span className="text-stone-300">·</span>
-          <span className="text-sm text-forest-500">Day {lesson.day}</span>
-          <span className="text-stone-300">·</span>
-          <span className="text-sm text-forest-500">⏱ {lesson.estimatedMinutes} min</span>
+          <span style={{ color: 'var(--stone-mid)' }}>·</span>
+          <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Day {lesson.day}</span>
+          <span style={{ color: 'var(--stone-mid)' }}>·</span>
+          <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>{lesson.estimatedMinutes} min</span>
         </div>
 
         {/* Completion banner */}
@@ -112,30 +109,48 @@ export default function LessonPage() {
           />
         )}
 
-        {/* Main layout: left content + right interactive */}
+        {/* Main layout */}
         <div className="grid lg:grid-cols-5 gap-8 items-start">
-          {/* ─── Left: lesson content (3/5) ─────────────────────────────── */}
+          {/* ── Left: lesson content ──────────────────────────────────── */}
           <div className="lg:col-span-3 flex flex-col gap-6">
             {/* Lesson header */}
-            <div className="animate-slide-up">
+            <div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {lesson.skillTags.map(tag => (
                   <SkillTagChip key={tag} tag={tag} />
                 ))}
                 {completed && (
-                  <span className="tag-chip bg-forest-100 text-forest-700 text-xs px-2.5 py-1 font-semibold">
+                  <span
+                    className="text-xs px-2.5 py-1 font-medium"
+                    style={{
+                      border: '1px solid var(--cognac)',
+                      color: 'var(--cognac)',
+                    }}
+                  >
                     ✓ Completed
                   </span>
                 )}
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black text-forest-950 leading-tight mb-2">
+              <h1
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+                  lineHeight: 1.05,
+                  fontWeight: 600,
+                  letterSpacing: '-0.02em',
+                  color: 'var(--ink)',
+                  marginBottom: '0.5rem',
+                }}
+              >
                 {lesson.title}
               </h1>
-              <p className="text-lg text-forest-600 font-light">{lesson.subtitle}</p>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-md)' }}>
+                {lesson.subtitle}
+              </p>
             </div>
 
-            {/* Step progress bar */}
-            <div className="animate-slide-up animation-delay-100">
+            {/* Step progress */}
+            <div>
               <ProgressBar
                 value={stepProgress}
                 label={`Step ${activeStepIdx + 1} of ${totalSteps}`}
@@ -146,17 +161,17 @@ export default function LessonPage() {
             </div>
 
             {/* Step tabs */}
-            <div className="flex gap-2 flex-wrap animate-slide-up animation-delay-100">
+            <div className="flex gap-2 flex-wrap">
               {lesson.steps.map((step, idx) => (
                 <button
                   key={step.id}
                   onClick={() => setActiveStepIdx(idx)}
-                  className={[
-                    'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200',
-                    idx === activeStepIdx
-                      ? 'bg-forest-700 text-white shadow-nature'
-                      : 'bg-forest-50 text-forest-600 hover:bg-forest-100',
-                  ].join(' ')}
+                  className="w-8 h-8 flex items-center justify-center text-xs font-medium transition-all duration-200"
+                  style={{
+                    background: idx === activeStepIdx ? 'var(--moss)' : 'transparent',
+                    color: idx === activeStepIdx ? 'white' : 'var(--ink-muted)',
+                    border: idx === activeStepIdx ? '1px solid var(--moss)' : '1px solid var(--stone-mid)',
+                  }}
                 >
                   {idx + 1}
                 </button>
@@ -171,7 +186,7 @@ export default function LessonPage() {
             />
 
             {/* Step navigation */}
-            <div className="flex items-center justify-between gap-4 animate-fade-in">
+            <div className="flex items-center justify-between gap-4">
               <Button
                 variant="ghost"
                 size="sm"
@@ -182,33 +197,33 @@ export default function LessonPage() {
               </Button>
               {activeStepIdx < totalSteps - 1 ? (
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
                   onClick={() => setActiveStepIdx(i => i + 1)}
                 >
                   Next step →
                 </Button>
               ) : (
-                <div className="text-xs text-forest-500 font-medium">
-                  Last step — complete the lesson on the right →
-                </div>
+                <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+                  Last step — complete the lesson →
+                </span>
               )}
             </div>
           </div>
 
-          {/* ─── Right: interactive panel (2/5) ─────────────────────────── */}
-          <div className="lg:col-span-2 flex flex-col gap-6 lg:sticky lg:top-24 animate-slide-in-right animation-delay-200">
+          {/* ── Right: interactive panel ──────────────────────────────── */}
+          <div className="lg:col-span-2 flex flex-col gap-5 lg:sticky lg:top-24">
             {/* Micro-task box */}
-            <div className="glass-card rounded-2xl p-5 border border-forest-100">
+            <div style={{ border: '1px solid var(--stone-mid)', padding: '1.25rem' }}>
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 rounded-lg bg-forest-100 flex items-center justify-center">
-                  <span className="text-sm">⚡</span>
-                </div>
-                <h3 className="font-bold text-sm text-forest-800">Quick Task</h3>
+                <span className="text-sm">⚡</span>
+                <h3 className="font-medium text-sm" style={{ color: 'var(--ink)' }}>Quick Task</h3>
               </div>
-              <p className="text-sm text-forest-600 leading-relaxed">{lesson.microtask}</p>
+              <p className="text-xs leading-relaxed mb-3" style={{ color: 'var(--ink-md)' }}>
+                {lesson.microtask}
+              </p>
               <textarea
-                className="nature-textarea mt-3 text-sm"
+                className="nature-textarea mt-1 text-sm"
                 placeholder="Work through the task here…"
                 rows={3}
                 value={reflections['__microtask__'] ?? ''}
@@ -216,7 +231,7 @@ export default function LessonPage() {
               />
             </div>
 
-            {/* Critical thinking check */}
+            {/* Critical thinking */}
             <CriticalThinkingCheck
               prompts={lesson.criticalThinkingPrompts}
               answers={ctAnswers}
@@ -225,19 +240,16 @@ export default function LessonPage() {
 
             {/* Complete button */}
             {!completed ? (
-              <Button
-                variant="amber"
-                size="lg"
-                fullWidth
-                onClick={handleComplete}
-                className="mt-2"
-              >
+              <Button variant="primary" size="lg" fullWidth onClick={handleComplete}>
                 Mark lesson complete ✓
               </Button>
             ) : (
-              <div className="rounded-2xl bg-forest-50 border border-forest-200 p-4 text-center">
-                <p className="text-sm font-semibold text-forest-700 mb-3">
-                  ✓ Lesson completed!
+              <div
+                className="p-4 text-center"
+                style={{ border: '1px solid var(--stone-mid)' }}
+              >
+                <p className="text-xs font-medium mb-3" style={{ color: 'var(--cognac)' }}>
+                  ✓ Lesson completed
                 </p>
                 {nextLesson ? (
                   <Link href={`/lesson/${nextLesson.id}`}>
@@ -247,17 +259,16 @@ export default function LessonPage() {
                   </Link>
                 ) : (
                   <Link href="/dashboard">
-                    <Button variant="secondary" size="md" fullWidth>
-                      Back to dashboard
+                    <Button variant="outline" size="md" fullWidth>
+                      Back to curriculum
                     </Button>
                   </Link>
                 )}
               </div>
             )}
 
-            {/* Next lesson teaser */}
             {lesson.nextLessonTeaser && !completed && (
-              <p className="text-xs text-forest-400 text-center italic">
+              <p className="text-xs text-center italic" style={{ color: 'var(--ink-muted)' }}>
                 {lesson.nextLessonTeaser}
               </p>
             )}
@@ -268,7 +279,7 @@ export default function LessonPage() {
   );
 }
 
-// ─── Step content renderer ────────────────────────────────────────────────────
+// ─── Step content ─────────────────────────────────────────────────────────────
 
 function StepContent({
   step,
@@ -281,48 +292,46 @@ function StepContent({
 }) {
   if (!step) return null;
 
-  const typeConfig: Record<string, { icon: string; color: string; label: string }> = {
-    text:       { icon: '📖', color: 'bg-forest-50 border-forest-100', label: 'Read' },
-    example:    { icon: '💡', color: 'bg-amber-50 border-amber-100', label: 'Example' },
-    task:       { icon: '✏️', color: 'bg-teal-50 border-teal-100', label: 'Task' },
-    reflection: { icon: '🪞', color: 'bg-stone-50 border-stone-200', label: 'Reflect' },
+  const typeConfig: Record<string, { icon: string; label: string }> = {
+    text:       { icon: '📖', label: 'Read' },
+    example:    { icon: '💡', label: 'Example' },
+    task:       { icon: '✏️', label: 'Task' },
+    reflection: { icon: '🪞', label: 'Reflect' },
   };
 
-  const { icon, color, label } = typeConfig[step.type] ?? typeConfig.text;
+  const { icon, label } = typeConfig[step.type] ?? typeConfig.text;
 
   return (
-    <div className={`rounded-2xl p-6 border ${color} animate-scale-in`}>
+    <div style={{ border: '1px solid var(--stone-mid)', padding: '1.5rem' }}>
       {/* Step header */}
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-base">{icon}</span>
-        <span className="text-xs font-bold uppercase tracking-wider text-forest-500">{label}</span>
+        <span className="text-sm">{icon}</span>
+        <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{ color: 'var(--ink-muted)' }}>
+          {label}
+        </span>
       </div>
 
-      <h2 className="text-xl font-bold text-forest-900 mb-4 leading-snug">{step.title}</h2>
+      <h2
+        className="font-medium mb-4 leading-snug"
+        style={{ fontSize: '1.1rem', color: 'var(--ink)' }}
+      >
+        {step.title}
+      </h2>
 
-      {/* Content — render with basic markdown-like formatting */}
-      <div className="prose-nature">
+      <div className="flex flex-col gap-2">
         {step.content.split('\n').map((line, i) => {
-          if (!line.trim()) return <div key={i} className="h-3" />;
+          if (!line.trim()) return <div key={i} className="h-2" />;
 
-          // Bold text: **text**
           const formatted = line.replace(
             /\*\*(.*?)\*\*/g,
-            '<strong class="font-semibold text-forest-900">$1</strong>',
+            '<strong style="font-weight:600;color:var(--ink)">$1</strong>',
           );
-          // Bullet points
+
           if (line.startsWith('• ') || line.startsWith('- ')) {
             return (
-              <div
-                key={i}
-                className="flex items-start gap-2 text-sm text-forest-700 leading-relaxed"
-              >
-                <span className="mt-1 text-forest-400 flex-shrink-0">•</span>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: formatted.replace(/^[•\-] /, ''),
-                  }}
-                />
+              <div key={i} className="flex items-start gap-2 text-sm" style={{ color: 'var(--ink-md)', lineHeight: '1.6' }}>
+                <span className="mt-1 flex-shrink-0" style={{ color: 'var(--cognac)' }}>–</span>
+                <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^[•\-] /, '') }} />
               </div>
             );
           }
@@ -330,14 +339,14 @@ function StepContent({
           return (
             <p
               key={i}
-              className="text-sm text-forest-700 leading-relaxed"
+              className="text-sm"
+              style={{ color: 'var(--ink-md)', lineHeight: '1.65' }}
               dangerouslySetInnerHTML={{ __html: formatted }}
             />
           );
         })}
       </div>
 
-      {/* Input area for task/reflection steps */}
       {(step.type === 'task' || step.type === 'reflection') && (
         <textarea
           className="nature-textarea mt-5"
@@ -363,12 +372,17 @@ function CompletionBanner({
   onDismiss: () => void;
 }) {
   return (
-    <div className="mb-8 glass-card-dark rounded-2xl p-6 flex items-center justify-between gap-4 animate-scale-in">
+    <div
+      className="mb-8 flex items-center justify-between gap-4 p-5"
+      style={{ background: 'var(--moss)', color: 'white' }}
+    >
       <div>
-        <p className="text-green-300 text-sm font-semibold mb-1">🎉 Lesson complete!</p>
-        <p className="text-white font-bold">{lessonTitle}</p>
+        <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          Lesson complete
+        </p>
+        <p className="font-medium text-sm">{lessonTitle}</p>
         {nextLesson && (
-          <p className="text-forest-300 text-sm mt-1">
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Up next: Day {nextLesson.day} — {nextLesson.title}
           </p>
         )}
@@ -376,14 +390,13 @@ function CompletionBanner({
       <div className="flex items-center gap-3 flex-shrink-0">
         {nextLesson && (
           <Link href={`/lesson/${nextLesson.id}`}>
-            <Button variant="amber" size="sm">
-              Continue →
-            </Button>
+            <Button variant="amber" size="sm">Continue →</Button>
           </Link>
         )}
         <button
           onClick={onDismiss}
-          className="text-forest-400 hover:text-forest-200 transition-colors text-xl leading-none"
+          className="text-xl leading-none hover:opacity-60 transition-opacity"
+          style={{ color: 'rgba(255,255,255,0.5)' }}
         >
           ×
         </button>

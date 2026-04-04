@@ -656,12 +656,12 @@ export const SKILL_TAG_LABELS: Record<string, string> = {
 };
 
 export const SKILL_TAG_COLORS: Record<string, string> = {
-  prompting: 'bg-forest-100 text-forest-700',
-  verification: 'bg-amber-100 text-amber-800',
-  automation: 'bg-teal-100 text-teal-700',
-  copywriting: 'bg-purple-100 text-purple-700',
-  research: 'bg-blue-100 text-blue-700',
-  strategy: 'bg-forest-100 text-forest-800',
-  'critical-thinking': 'bg-amber-100 text-amber-700',
-  tools: 'bg-stone-200 text-stone-700',
+  prompting:          'bg-moss-100 text-moss-600',
+  verification:       'bg-stone-300 text-ink-700',
+  automation:         'bg-moss-100 text-moss-500',
+  copywriting:        'bg-stone-200 text-ink-600',
+  research:           'bg-stone-200 text-ink-600',
+  strategy:           'bg-moss-100 text-moss-600',
+  'critical-thinking':'bg-stone-300 text-ink-700',
+  tools:              'bg-stone-200 text-ink-600',
 };

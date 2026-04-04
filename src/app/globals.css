@@ -72,6 +72,8 @@
     --text-dark:       var(--ink);
     --text-medium:     var(--ink-md);
     --forest-primary:  var(--moss);
+    --stone-dark:      var(--ink);
+    --charcoal:        var(--ink-md);
   }
 
   * {
