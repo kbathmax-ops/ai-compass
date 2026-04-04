@@ -1,0 +1,254 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Custom font import ────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ─── Base styles ───────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* ── AI Compass Design Tokens ────────────────────────────────────── */
+
+    /* Cognac — primary brand accent */
+    --cognac:        #B8742E;
+    --cognac-lt:     #c4873f;
+    --cognac-dk:     #935c22;
+
+    /* Stone — warm concrete backgrounds */
+    --stone:         #EDE8E0;   /* page background */
+    --stone-lt:      #f5f2ed;
+    --stone-mid:     #D6CFCA;   /* borders / dividers */
+    --stone-dk:      #BDB5AC;
+
+    /* Ink — warm dark text */
+    --ink:           #2A2520;   /* headings, near-black */
+    --ink-md:        #4A433D;   /* body / charcoal */
+    --ink-muted:     #8c7b6e;   /* secondary text */
+
+    /* Moss — deep forest green */
+    --moss:          #1F3528;
+    --moss-lt:       #265c3f;
+
+    /* Semantic */
+    --success:       #2d6a4f;
+    --warning:       #e9a24b;
+    --error:         #c1440e;
+
+    /* Typography */
+    --font-display:  'Cormorant Garamond', Georgia, serif;
+    --font-sans:     'DM Sans', system-ui, sans-serif;
+
+    /* Spacing (8pt grid) */
+    --space-xs:      4px;
+    --space-sm:      8px;
+    --space-md:      16px;
+    --space-lg:      24px;
+    --space-xl:      40px;
+    --space-2xl:     72px;
+    --space-3xl:     128px;
+
+    /* Borders */
+    --radius-sm:     2px;
+    --radius:        4px;
+    --radius-lg:     6px;
+
+    /* Shadows (warm-tinted) */
+    --shadow-sm:     0 1px 2px rgba(42,37,32,0.08);
+    --shadow:        0 2px 4px rgba(42,37,32,0.10);
+    --shadow-md:     0 4px 12px rgba(42,37,32,0.10);
+    --shadow-lg:     0 8px 24px rgba(42,37,32,0.12);
+    --shadow-cognac: 0 4px 20px rgba(184,116,46,0.25);
+
+    /* Animation */
+    --duration-fast:   150ms;
+    --duration:        250ms;
+    --duration-slow:   350ms;
+    --ease-out:        ease-out;
+    --ease-spring:     cubic-bezier(0.68,-0.55,0.265,1.55);
+
+    /* Legacy aliases (keep existing components working) */
+    --bg-cream:        var(--stone);
+    --text-dark:       var(--ink);
+    --text-medium:     var(--ink-md);
+    --forest-primary:  var(--moss);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--stone);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar — warm, architectural */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--stone-lt); }
+  ::-webkit-scrollbar-thumb { background: var(--stone-dk); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--cognac); }
+
+  /* Focus ring — on-brand */
+  :focus-visible {
+    outline: 2px solid var(--cognac);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ─── Component utilities ───────────────────────────────────────────────────── */
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 24px rgba(23, 79, 56, 0.08), 0 1px 4px rgba(23, 79, 56, 0.04);
+  }
+
+  .glass-card-dark {
+    background: rgba(23, 79, 56, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Elevated card on hover */
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(23, 79, 56, 0.14), 0 4px 12px rgba(23, 79, 56, 0.08);
+  }
+
+  /* Page background with organic blobs */
+  .nature-bg {
+    background: linear-gradient(135deg, #faf8f5 0%, #f0f7f2 60%, #f4f9f6 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Organic blob shape */
+  .nature-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* Progress bar animated fill */
+  .progress-bar-fill {
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Pill button base */
+  .btn-pill {
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #174f38, #2e7d5a, #4da077);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Animated gradient border */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #2e7d5a, #f59e0b, #0d9488);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Tag chip */
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  /* Textarea — clean and nature styled */
+  .nature-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(240, 247, 242, 0.6);
+    border: 1.5px solid #b3dac2;
+    border-radius: 0.75rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 100px;
+  }
+  .nature-textarea:focus {
+    outline: none;
+    border-color: #2e7d5a;
+    box-shadow: 0 0 0 3px rgba(46, 125, 90, 0.12);
+  }
+  .nature-textarea::placeholder {
+    color: #86bf9c;
+    font-style: italic;
+  }
+
+  /* Step type indicator dots */
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
+/* ─── Utility extensions ────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+
+  .opacity-0-init {
+    opacity: 0;
+  }
+}
