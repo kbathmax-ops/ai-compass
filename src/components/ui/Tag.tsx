@@ -8,14 +8,30 @@ interface TagProps {
   size?: 'xs' | 'sm';
 }
 
+// Base editorial badge style
+const badgeBase: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  border: '1px solid currentColor',
+  background: 'transparent',
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--text-xs)',
+  fontWeight: 400,
+  textTransform: 'uppercase',
+  letterSpacing: '0.08em',
+  lineHeight: 1.4,
+  borderRadius: 'var(--radius-sm)',
+};
+
 export function Tag({ label, className = '', size = 'sm' }: TagProps) {
   return (
     <span
-      className={[
-        'tag-chip',
-        size === 'xs' ? 'text-[0.65rem] px-2 py-0.5' : 'text-xs px-3 py-1',
-        className,
-      ].join(' ')}
+      className={className}
+      style={{
+        ...badgeBase,
+        padding: size === 'xs' ? '2px 6px' : '3px 8px',
+        color: 'var(--color-text-2)',
+      }}
     >
       {label}
     </span>
@@ -28,16 +44,29 @@ interface SkillTagProps {
 }
 
 export function SkillTagChip({ tag, size = 'sm' }: SkillTagProps) {
-  const colorClass = SKILL_TAG_COLORS[tag] ?? 'bg-stone-200 text-stone-700';
   const label = SKILL_TAG_LABELS[tag] ?? tag;
+
+  // Map old color classes to editorial color values
+  const colorMap: Record<string, string> = {
+    prompting:          'var(--color-text)',
+    verification:       'var(--color-text-2)',
+    automation:         'var(--color-text)',
+    copywriting:        'var(--color-text-2)',
+    research:           'var(--color-text-2)',
+    strategy:           'var(--color-text)',
+    'critical-thinking':'var(--color-brand)',
+    tools:              'var(--color-text-2)',
+  };
+
+  const color = colorMap[tag] ?? 'var(--color-text-2)';
 
   return (
     <span
-      className={[
-        'tag-chip',
-        colorClass,
-        size === 'xs' ? 'text-[0.65rem] px-2 py-0.5' : 'text-xs px-2.5 py-1',
-      ].join(' ')}
+      style={{
+        ...badgeBase,
+        padding: size === 'xs' ? '2px 6px' : '3px 8px',
+        color,
+      }}
     >
       {label}
     </span>
@@ -49,11 +78,13 @@ export function SkillTagChip({ tag, size = 'sm' }: SkillTagProps) {
 export function RoleBadge({ size = 'sm' }: { size?: 'sm' | 'md' }) {
   return (
     <span
-      className={[
-        'tag-chip font-medium',
-        size === 'sm' ? 'text-xs px-2.5 py-1' : 'text-sm px-3 py-1.5',
-      ].join(' ')}
-      style={{ border: '1px solid var(--cognac)', color: 'var(--cognac)' }}
+      style={{
+        ...badgeBase,
+        padding: size === 'sm' ? '3px 8px' : '4px 10px',
+        fontSize: size === 'md' ? 'var(--text-sm)' : 'var(--text-xs)',
+        color: 'var(--color-brand)',
+        borderColor: 'var(--color-brand)',
+      }}
     >
       Business Owner
     </span>

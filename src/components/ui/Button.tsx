@@ -14,32 +14,37 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const variantStyles: Record<Variant, string> = {
-  primary:
-    'text-white hover:opacity-80 active:opacity-90',
-  secondary:
-    'hover:opacity-80',
-  ghost:
-    'bg-transparent hover:opacity-70',
-  amber:
-    'text-white hover:opacity-80',
-  outline:
-    'bg-transparent hover:opacity-80',
+// Height / padding per size — all uppercase, 13px, no pills
+const sizeMap: Record<Size, React.CSSProperties> = {
+  sm: { height: '32px', padding: '0 16px', fontSize: 'var(--text-xs)' },
+  md: { height: '40px', padding: '0 24px', fontSize: 'var(--text-sm)' },
+  lg: { height: '44px', padding: '0 28px', fontSize: 'var(--text-sm)' },
+  xl: { height: '52px', padding: '0 36px', fontSize: 'var(--text-base)' },
 };
 
-const variantInline: Record<Variant, React.CSSProperties> = {
-  primary:   { background: 'var(--moss)', color: 'white', border: 'none' },
-  secondary: { background: 'var(--stone-mid)', color: 'var(--ink)', border: 'none' },
-  ghost:     { background: 'transparent', color: 'var(--ink-md)', border: 'none' },
-  amber:     { background: 'var(--cognac)', color: 'white', border: 'none' },
-  outline:   { background: 'transparent', color: 'var(--ink)', border: '1px solid var(--stone-mid)' },
-};
-
-const sizeStyles: Record<Size, string> = {
-  sm:  'px-4 py-2 text-xs gap-1.5',
-  md:  'px-6 py-2.5 text-sm gap-2',
-  lg:  'px-8 py-3 text-sm gap-2',
-  xl:  'px-10 py-4 text-base gap-2.5',
+// Color scheme per variant
+const variantMap: Record<Variant, { base: React.CSSProperties; hover: React.CSSProperties }> = {
+  primary: {
+    base:  { background: 'var(--color-invert)', color: 'var(--color-text-inv)', border: '1px solid transparent' },
+    hover: { background: 'var(--color-brand)' },
+  },
+  secondary: {
+    base:  { background: 'transparent', color: 'var(--color-text)', border: '1px solid var(--color-border-strong)' },
+    hover: { background: 'var(--color-surface-2)', borderColor: 'var(--color-text)' },
+  },
+  ghost: {
+    base:  { background: 'transparent', color: 'var(--color-text-2)', border: '1px solid transparent' },
+    hover: { color: 'var(--color-text)' },
+  },
+  // amber → brand (legacy compat)
+  amber: {
+    base:  { background: 'var(--color-brand)', color: 'var(--color-text-inv)', border: '1px solid transparent' },
+    hover: { background: 'var(--color-brand-2)' },
+  },
+  outline: {
+    base:  { background: 'transparent', color: 'var(--color-text)', border: '1px solid var(--color-border-strong)' },
+    hover: { background: 'var(--color-surface-2)' },
+  },
 };
 
 export function Button({
@@ -56,21 +61,46 @@ export function Button({
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const { base } = variantMap[variant];
+  const { hover } = variantMap[variant];
 
   return (
     <button
       disabled={isDisabled}
+      onMouseEnter={e => {
+        if (isDisabled) return;
+        const el = e.currentTarget;
+        Object.assign(el.style, hover);
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget;
+        Object.assign(el.style, base);
+        // Re-apply combined style prop overrides
+        if (style) Object.assign(el.style, style);
+      }}
       className={[
-        'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 select-none',
-        variantStyles[variant],
-        sizeStyles[size],
         fullWidth ? 'w-full' : '',
-        isDisabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : '',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={{ ...variantInline[variant], ...style }}
+      ].filter(Boolean).join(' ')}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        fontFamily: 'var(--font-body)',
+        fontWeight: 500,
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+        borderRadius: 'var(--radius-sm)',
+        cursor: isDisabled ? 'not-allowed' : 'pointer',
+        opacity: isDisabled ? 0.35 : 1,
+        pointerEvents: isDisabled ? 'none' : 'auto',
+        whiteSpace: 'nowrap',
+        transition: `background-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease)`,
+        ...base,
+        ...sizeMap[size],
+        ...style,
+      }}
       {...props}
     >
       {loading ? (
@@ -80,9 +110,9 @@ export function Button({
         </>
       ) : (
         <>
-          {icon && iconPosition === 'left' && <span className="flex-shrink-0">{icon}</span>}
+          {icon && iconPosition === 'left' && <span style={{ flexShrink: 0 }}>{icon}</span>}
           {children}
-          {icon && iconPosition === 'right' && <span className="flex-shrink-0">{icon}</span>}
+          {icon && iconPosition === 'right' && <span style={{ flexShrink: 0 }}>{icon}</span>}
         </>
       )}
     </button>
@@ -92,17 +122,13 @@ export function Button({
 function Spinner() {
   return (
     <svg
-      className="animate-spin h-4 w-4"
+      style={{ animation: 'spin 1s linear infinite', width: '14px', height: '14px' }}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
     >
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
+      <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
   );
 }

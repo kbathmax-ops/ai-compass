@@ -12,22 +12,13 @@ interface ProgressBarProps {
   className?: string;
 }
 
-const heightMap = {
-  xs: 'h-1',
-  sm: 'h-2',
-  md: 'h-3',
-};
+const heightMap = { xs: '2px', sm: '3px', md: '4px' };
 
+// All colors → editorial palette
 const colorMap = {
-  forest: 'bg-moss-500',
-  amber:  'bg-cognac',
-  teal:   'bg-moss-400',
-};
-
-const trackColorMap = {
-  forest: 'bg-stone-300',
-  amber:  'bg-stone-300',
-  teal:   'bg-stone-300',
+  forest: 'var(--color-text)',
+  amber:  'var(--color-brand)',
+  teal:   'var(--color-text-2)',
 };
 
 export function ProgressBar({
@@ -46,43 +37,71 @@ export function ProgressBar({
   useEffect(() => {
     if (!animate || hasAnimated.current) return;
     hasAnimated.current = true;
-    const raf = requestAnimationFrame(() => {
-      setDisplayValue(clampedValue);
-    });
+    const raf = requestAnimationFrame(() => setDisplayValue(clampedValue));
     return () => cancelAnimationFrame(raf);
   }, [clampedValue, animate]);
+
+  const barColor = colorMap[color];
+  const height = heightMap[size];
 
   return (
     <div className={`w-full ${className}`}>
       {(label || showPercentage) && (
-        <div className="flex justify-between items-center mb-1.5">
+        <div className="flex justify-between items-center" style={{ marginBottom: '6px' }}>
           {label && (
-            <span className="text-xs font-medium" style={{ color: 'var(--ink-muted)' }}>{label}</span>
+            <span
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                color: 'var(--color-text-3)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {label}
+            </span>
           )}
           {showPercentage && (
-            <span className="text-xs font-medium" style={{ color: 'var(--ink-md)' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--text-xs)',
+                color: 'var(--color-text-2)',
+              }}
+            >
               {Math.round(clampedValue)}%
             </span>
           )}
         </div>
       )}
       <div
-        className={`w-full ${heightMap[size]} ${trackColorMap[color]} rounded-full overflow-hidden`}
+        style={{
+          width: '100%',
+          height,
+          background: 'var(--color-border)',
+          borderRadius: 0,
+          overflow: 'hidden',
+        }}
         role="progressbar"
         aria-valuenow={clampedValue}
         aria-valuemin={0}
         aria-valuemax={100}
       >
         <div
-          className={`${heightMap[size]} ${colorMap[color]} rounded-full progress-bar-fill`}
-          style={{ width: `${displayValue}%` }}
+          style={{
+            height,
+            width: `${displayValue}%`,
+            background: barColor,
+            borderRadius: 0,
+            transition: 'width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          }}
         />
       </div>
     </div>
   );
 }
 
-// ─── Circular progress indicator ─────────────────────────────────────────────
+// ─── Circular progress ─────────────────────────────────────────────────────────
 
 interface CircularProgressProps {
   value: number;
@@ -95,8 +114,8 @@ interface CircularProgressProps {
 export function CircularProgress({
   value,
   size = 48,
-  strokeWidth = 4,
-  color = '#2e7d5a',
+  strokeWidth = 3,
+  color = 'var(--color-text)',
   label,
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
@@ -104,33 +123,34 @@ export function CircularProgress({
   const offset = circumference - (value / 100) * circumference;
 
   return (
-    <div className="relative inline-flex items-center justify-center">
+    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
         <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
+          cx={size / 2} cy={size / 2} r={radius}
           fill="none"
-          stroke="#d9ede0"
+          stroke="var(--color-border)"
           strokeWidth={strokeWidth}
         />
         <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
+          cx={size / 2} cy={size / 2} r={radius}
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth}
-          strokeLinecap="round"
+          strokeLinecap="square"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1)' }}
+          style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
         />
       </svg>
       {label && (
         <span
-          className="absolute text-xs font-bold"
-          style={{ transform: 'rotate(0deg)', color: 'var(--ink)' }}
+          style={{
+            position: 'absolute',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text)',
+            transform: 'rotate(0deg)',
+          }}
         >
           {label}
         </span>

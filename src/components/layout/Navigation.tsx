@@ -18,61 +18,90 @@ export function Navigation() {
   ).length;
   const totalCount = lessons.length;
 
+  const NAV_ITEMS = [
+    { href: '/dashboard', label: 'Curriculum' },
+    { href: '/profile',   label: 'Progress' },
+  ];
+
   return (
     <>
       {/* Desktop top nav */}
       <nav
-        className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-14"
+        className="hidden md:flex fixed top-0 left-0 right-0 z-50"
         style={{
-          background: 'var(--stone)',
-          borderBottom: '1px solid var(--stone-mid)',
+          height: '52px',
+          background: 'var(--color-bg)',
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
-        <div className="max-w-4xl mx-auto px-8 sm:px-14 w-full flex items-center justify-between">
+        <div
+          className="w-full flex items-center justify-between"
+          style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 var(--space-12)' }}
+        >
           {/* Wordmark */}
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" style={{ color: 'var(--cognac)' }}>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2"
+            style={{ textDecoration: 'none' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none" style={{ color: 'var(--color-brand)', flexShrink: 0 }}>
               <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.2" />
               <line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" strokeWidth="1.2" />
               <line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" strokeWidth="1.2" />
               <circle cx="9" cy="9" r="1.5" fill="currentColor" />
             </svg>
             <span
-              className="text-xs font-medium tracking-[0.22em] uppercase"
-              style={{ color: 'var(--ink-md)' }}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 500,
+                letterSpacing: '0.10em',
+                textTransform: 'uppercase',
+                color: 'var(--color-text-2)',
+              }}
             >
               AI Compass
             </span>
           </Link>
 
           {/* Nav links */}
-          <div className="flex items-center gap-6">
-            {[
-              { href: '/dashboard', label: 'Curriculum' },
-              { href: '/profile', label: 'Progress' },
-            ].map(({ href, label }) => {
+          <div className="flex items-center" style={{ gap: 'var(--space-8)' }}>
+            {NAV_ITEMS.map(({ href, label }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="text-xs tracking-wider transition-opacity duration-200"
                   style={{
-                    color: isActive ? 'var(--cognac)' : 'var(--ink-muted)',
-                    fontWeight: isActive ? 500 : 400,
-                    opacity: isActive ? 1 : 0.7,
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    fontWeight: 400,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: isActive ? 'var(--color-text)' : 'var(--color-text-2)',
+                    textDecoration: 'none',
+                    borderBottom: isActive ? '2px solid var(--color-text)' : '2px solid transparent',
+                    paddingBottom: '2px',
+                    transition: `color var(--duration-fast) var(--ease)`,
                   }}
                 >
-                  {label.toUpperCase()}
+                  {label}
                 </Link>
               );
             })}
           </div>
 
           {/* Progress counter */}
-          <div className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-3)',
+              letterSpacing: '0.04em',
+            }}
+          >
             {completedCount}/{totalCount}
-          </div>
+          </span>
         </div>
       </nav>
 
@@ -80,50 +109,35 @@ export function Navigation() {
       <nav
         className="md:hidden fixed bottom-0 left-0 right-0 z-50"
         style={{
-          background: 'var(--stone)',
-          borderTop: '1px solid var(--stone-mid)',
+          background: 'var(--color-bg)',
+          borderTop: '1px solid var(--color-border)',
         }}
       >
         <div className="flex">
-          {[
-            { href: '/dashboard', label: 'Curriculum', icon: <BookIcon /> },
-            { href: '/profile', label: 'Progress', icon: <ChartIcon /> },
-          ].map(({ href, label, icon }) => {
+          {NAV_ITEMS.map(({ href, label }) => {
             const isActive = pathname.startsWith(href);
             return (
               <Link
                 key={href}
                 href={href}
-                className="flex-1 flex flex-col items-center gap-1 py-3"
+                className="flex-1 flex flex-col items-center py-3"
                 style={{
-                  color: isActive ? 'var(--cognac)' : 'var(--ink-muted)',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: isActive ? 'var(--color-text)' : 'var(--color-text-3)',
+                  textDecoration: 'none',
+                  borderTop: isActive ? '2px solid var(--color-text)' : '2px solid transparent',
+                  marginTop: '-1px',
                 }}
               >
-                {icon}
-                <span className="text-[10px] tracking-wider uppercase">{label}</span>
+                {label}
               </Link>
             );
           })}
         </div>
       </nav>
     </>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function ChartIcon() {
-  return (
-    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path d="M3 3v18h18" />
-      <path d="m19 9-5 5-4-4-3 3" />
-    </svg>
   );
 }

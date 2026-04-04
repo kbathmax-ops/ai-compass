@@ -12,65 +12,88 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
   return (
-    <div className="flex items-center justify-center gap-0">
+    <div className="flex items-center justify-center">
       {steps.map((step, idx) => {
-        const status =
-          idx < currentStep ? 'done' : idx === currentStep ? 'active' : 'upcoming';
+        const status = idx < currentStep ? 'done' : idx === currentStep ? 'active' : 'upcoming';
 
         return (
           <React.Fragment key={idx}>
             {/* Step node */}
-            <div className="flex flex-col items-center gap-1.5">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
               <div
-                className={[
-                  'w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300',
-                  status === 'done'
-                    ? 'bg-forest-600 text-white shadow-nature'
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 'var(--radius-sm)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 400,
+                  border: status === 'done'
+                    ? '1px solid var(--color-text)'
                     : status === 'active'
-                    ? 'bg-white border-2 border-forest-500 text-forest-700 shadow-nature-md scale-110'
-                    : 'bg-stone-100 border-2 border-stone-200 text-stone-400',
-                ].join(' ')}
+                    ? '1px solid var(--color-text)'
+                    : '1px solid var(--color-border-strong)',
+                  background: status === 'done'
+                    ? 'var(--color-invert)'
+                    : status === 'active'
+                    ? 'transparent'
+                    : 'transparent',
+                  color: status === 'done'
+                    ? 'var(--color-text-inv)'
+                    : status === 'active'
+                    ? 'var(--color-text)'
+                    : 'var(--color-text-3)',
+                  transition: `background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease)`,
+                }}
               >
                 {status === 'done' ? (
-                  <CheckIcon className="w-4 h-4" />
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                 ) : (
                   <span>{idx + 1}</span>
                 )}
               </div>
               <span
-                className={[
-                  'text-[0.65rem] font-medium text-center max-w-[72px] leading-tight hidden sm:block',
-                  status === 'active'
-                    ? 'text-forest-700'
+                className="hidden sm:block"
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  textAlign: 'center',
+                  maxWidth: '72px',
+                  lineHeight: 1.3,
+                  color: status === 'active'
+                    ? 'var(--color-text)'
                     : status === 'done'
-                    ? 'text-forest-500'
-                    : 'text-stone-400',
-                ].join(' ')}
+                    ? 'var(--color-text-2)'
+                    : 'var(--color-text-3)',
+                }}
               >
                 {step.label}
               </span>
             </div>
 
-            {/* Connector line */}
+            {/* Connector */}
             {idx < steps.length - 1 && (
               <div
-                className={[
-                  'h-0.5 w-12 sm:w-20 mx-1 rounded-full transition-all duration-300',
-                  idx < currentStep ? 'bg-forest-400' : 'bg-stone-200',
-                ].join(' ')}
+                style={{
+                  height: '1px',
+                  width: '64px',
+                  margin: '0 4px',
+                  marginBottom: '20px',
+                  background: idx < currentStep ? 'var(--color-text)' : 'var(--color-border)',
+                  transition: `background var(--duration-mid) var(--ease)`,
+                }}
               />
             )}
           </React.Fragment>
         );
       })}
     </div>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
   );
 }

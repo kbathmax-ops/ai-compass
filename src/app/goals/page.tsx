@@ -28,103 +28,176 @@ export default function GoalsPage() {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: 'var(--stone)', color: 'var(--ink)' }}
+      style={{ background: 'var(--color-bg)', color: 'var(--color-text)' }}
     >
-      {/* ── Header strip ─────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-8 sm:px-14 pt-10">
-        <div className="flex items-center gap-3">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ color: 'var(--cognac)' }}>
+      {/* ── Header ───────────────────────────────────────────────────────── */}
+      <header
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 'var(--space-4) var(--space-4)',
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <svg width="14" height="14" viewBox="0 0 18 18" fill="none" style={{ color: 'var(--color-brand)', flexShrink: 0 }}>
             <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.2" />
             <line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" strokeWidth="1.2" />
             <line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" strokeWidth="1.2" />
             <circle cx="9" cy="9" r="1.5" fill="currentColor" />
           </svg>
-          <span className="text-xs font-medium tracking-[0.22em] uppercase" style={{ color: 'var(--ink-md)' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 500,
+              letterSpacing: '0.10em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-2)',
+            }}
+          >
             AI Compass
           </span>
         </div>
-        <span className="text-xs tracking-wider" style={{ color: 'var(--ink-muted)' }}>
-          Step 1 of 2
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-3)',
+          }}
+        >
+          Step 1 / 2
         </span>
       </header>
 
-      <div className="mt-8 mx-8 sm:mx-14" style={{ borderTop: '1px solid var(--stone-mid)' }} />
-
-      {/* ── Main ─────────────────────────────────────────────────────── */}
-      <main className="flex-1 px-8 sm:px-14 py-12 sm:py-16">
-        <div className="max-w-3xl">
-          {/* Eyebrow */}
-          <p className="text-xs font-medium tracking-[0.3em] uppercase mb-4" style={{ color: 'var(--cognac)' }}>
+      {/* ── Main ─────────────────────────────────────────────────────────── */}
+      <main
+        style={{
+          flex: 1,
+          maxWidth: '1200px',
+          width: '100%',
+          margin: '0 auto',
+          padding: 'var(--space-12) var(--space-4)',
+        }}
+      >
+        {/* Heading block */}
+        <div style={{ maxWidth: '480px', marginBottom: 'var(--space-12)' }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 400,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--color-brand)',
+              marginBottom: 'var(--space-4)',
+            }}
+          >
             Set your direction
-          </p>
-
-          {/* Heading */}
+          </div>
           <h1
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2.4rem, 6vw, 4.5rem)',
-              lineHeight: 1.0,
-              fontWeight: 600,
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: 400,
               letterSpacing: '-0.02em',
-              color: 'var(--ink)',
-              marginBottom: '1.25rem',
+              lineHeight: 1.05,
+              color: 'var(--color-text)',
+              marginBottom: 'var(--space-4)',
             }}
           >
             What do you want<br />
-            <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>to get better at?</em>
+            <em style={{ fontStyle: 'italic', color: 'var(--color-brand)' }}>to get better at?</em>
           </h1>
-
-          <p className="text-sm leading-relaxed mb-10" style={{ color: 'var(--ink-md)', maxWidth: '28rem' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-base)',
+              lineHeight: 1.6,
+              color: 'var(--color-text-2)',
+            }}
+          >
             Pick the areas that matter most to your business.
             Your curriculum will be built around these.
           </p>
+        </div>
 
-          {/* Goals grid */}
-          <div className="grid sm:grid-cols-2 gap-3 mb-12">
-            {goals.map(goal => (
-              <GoalCard
-                key={goal.id}
-                goal={goal}
-                selected={selected.includes(goal.id)}
-                onToggle={() => toggle(goal.id)}
-              />
-            ))}
-          </div>
+        {/* Goals grid — asymmetric: first item wider */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1px',
+            background: 'var(--color-border)',
+            marginBottom: 'var(--space-12)',
+            maxWidth: '800px',
+          }}
+        >
+          {goals.map(goal => (
+            <GoalCard
+              key={goal.id}
+              goal={goal}
+              selected={selected.includes(goal.id)}
+              onToggle={() => toggle(goal.id)}
+            />
+          ))}
+        </div>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <button
-              onClick={handleContinue}
-              disabled={selected.length === 0}
-              className="group flex items-center gap-5"
-              style={{ opacity: selected.length === 0 ? 0.4 : 1, cursor: selected.length === 0 ? 'not-allowed' : 'pointer' }}
-            >
-              <span
-                className="text-sm font-medium tracking-wide transition-colors duration-200 group-hover:opacity-60"
-                style={{ color: 'var(--ink)' }}
-              >
-                {selected.length === 0
-                  ? 'Select at least one goal'
-                  : `Continue with ${selected.length} goal${selected.length > 1 ? 's' : ''}`}
-              </span>
-              <div
-                className="w-10 h-10 flex items-center justify-center transition-all duration-200 group-hover:translate-x-1"
-                style={{ border: '1px solid var(--stone-mid)', background: 'transparent' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ color: 'var(--ink)' }}>
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-            </button>
+        {/* CTA block */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-8)', flexWrap: 'wrap' }}>
+          <button
+            onClick={handleContinue}
+            disabled={selected.length === 0}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '40px',
+              padding: '0 var(--space-6)',
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 500,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              background: selected.length === 0 ? 'transparent' : 'var(--color-invert)',
+              color: selected.length === 0 ? 'var(--color-text-3)' : 'var(--color-text-inv)',
+              border: selected.length === 0 ? '1px solid var(--color-border-strong)' : '1px solid transparent',
+              borderRadius: 'var(--radius-sm)',
+              cursor: selected.length === 0 ? 'not-allowed' : 'pointer',
+              opacity: selected.length === 0 ? 0.5 : 1,
+              transition: `background var(--duration-fast) var(--ease)`,
+            }}
+            onMouseEnter={e => {
+              if (selected.length > 0) (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-brand)';
+            }}
+            onMouseLeave={e => {
+              if (selected.length > 0) (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-invert)';
+            }}
+          >
+            {selected.length === 0
+              ? 'Select at least one goal'
+              : `Continue — ${selected.length} selected`}
+          </button>
 
-            <button
-              onClick={handleContinue}
-              className="text-xs tracking-wider transition-opacity duration-200 hover:opacity-60"
-              style={{ color: 'var(--ink-muted)' }}
-            >
-              Skip for now →
-            </button>
-          </div>
+          <button
+            onClick={handleContinue}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-3)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: `color var(--duration-fast) var(--ease)`,
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-3)'; }}
+          >
+            Skip →
+          </button>
         </div>
       </main>
     </div>
@@ -145,44 +218,67 @@ function GoalCard({
   return (
     <button
       onClick={onToggle}
-      className="text-left transition-all duration-200"
       style={{
-        padding: '1.25rem 1.5rem',
-        border: selected ? '1px solid var(--cognac)' : '1px solid var(--stone-mid)',
-        background: selected ? 'rgba(184,116,46,0.04)' : 'transparent',
         display: 'flex',
         alignItems: 'flex-start',
-        gap: '1rem',
+        gap: 'var(--space-3)',
+        padding: 'var(--space-6)',
+        textAlign: 'left',
+        background: selected ? 'var(--color-surface-2)' : 'var(--color-bg)',
+        border: 'none',
+        cursor: 'pointer',
+        transition: `background var(--duration-fast) var(--ease)`,
+        width: '100%',
       }}
     >
       {/* Icon */}
-      <span className="text-xl flex-shrink-0 mt-0.5">{goal.icon}</span>
+      <span style={{ fontSize: '18px', flexShrink: 0, marginTop: '1px', lineHeight: 1 }}>{goal.icon}</span>
 
       {/* Text */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-3">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--space-2)' }}>
           <h3
-            className="font-medium text-sm leading-snug"
-            style={{ color: selected ? 'var(--cognac)' : 'var(--ink)' }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 400,
+              letterSpacing: '-0.01em',
+              lineHeight: 1.2,
+              color: selected ? 'var(--color-text)' : 'var(--color-text)',
+            }}
           >
             {goal.label}
           </h3>
-          {/* Checkmark */}
+          {/* Checkbox — square */}
           <div
-            className="flex-shrink-0 w-4 h-4 flex items-center justify-center mt-0.5"
             style={{
-              border: selected ? '1px solid var(--cognac)' : '1px solid var(--stone-dk)',
-              background: selected ? 'var(--cognac)' : 'transparent',
+              flexShrink: 0,
+              width: '16px',
+              height: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: selected ? '1px solid var(--color-text)' : '1px solid var(--color-border-strong)',
+              background: selected ? 'var(--color-invert)' : 'transparent',
+              marginTop: '2px',
             }}
           >
             {selected && (
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={3} className="w-2.5 h-2.5">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-inv)" strokeWidth={3}>
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             )}
           </div>
         </div>
-        <p className="text-xs leading-relaxed mt-1" style={{ color: 'var(--ink-muted)' }}>
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-sm)',
+            lineHeight: 1.5,
+            color: 'var(--color-text-2)',
+            marginTop: 'var(--space-1)',
+          }}
+        >
           {goal.description}
         </p>
       </div>

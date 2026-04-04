@@ -39,10 +39,23 @@ export default function LessonPage() {
 
   if (!lesson || !role) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--stone)' }}>
-        <div className="text-center">
-          <p className="text-sm mb-4" style={{ color: 'var(--ink-md)' }}>Lesson not found.</p>
-          <Link href="/dashboard" className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: 'var(--cognac)' }}>
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--color-bg)',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-2)', marginBottom: 'var(--space-4)' }}>
+            Lesson not found.
+          </p>
+          <Link
+            href="/dashboard"
+            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-brand)', textDecoration: 'none', letterSpacing: '0.04em' }}
+          >
             ← Back to curriculum
           </Link>
         </div>
@@ -71,10 +84,7 @@ export default function LessonPage() {
 
   function handleComplete() {
     if (!isAlreadyDone) {
-      completeLesson(lessonId, {
-        reflections,
-        criticalThinkingAnswers: ctAnswers,
-      });
+      completeLesson(lessonId, { reflections, criticalThinkingAnswers: ctAnswers });
     }
     setCompleted(true);
     setShowCompletion(true);
@@ -82,22 +92,55 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-28 px-4" style={{ background: 'var(--stone)' }}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-10">
-
-        {/* Back link + metadata */}
-        <div className="flex items-center gap-3 mb-8 pt-4">
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
+        paddingTop: '52px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: 'var(--space-8) var(--space-4) var(--space-16)',
+        }}
+      >
+        {/* Breadcrumb */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--space-3)',
+            marginBottom: 'var(--space-8)',
+            paddingTop: 'var(--space-4)',
+          }}
+        >
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 text-xs tracking-wider hover:opacity-70 transition-opacity"
-            style={{ color: 'var(--ink-muted)' }}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-3)',
+              textDecoration: 'none',
+              transition: `color var(--duration-fast) var(--ease)`,
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--color-text-3)'; }}
           >
             ← Curriculum
           </Link>
-          <span style={{ color: 'var(--stone-mid)' }}>·</span>
-          <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Day {lesson.day}</span>
-          <span style={{ color: 'var(--stone-mid)' }}>·</span>
-          <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>{lesson.estimatedMinutes} min</span>
+          <span style={{ color: 'var(--color-border-strong)', fontSize: '10px' }}>·</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-text-3)' }}>
+            Day {lesson.day}
+          </span>
+          <span style={{ color: 'var(--color-border-strong)', fontSize: '10px' }}>·</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-text-3)' }}>
+            {lesson.estimatedMinutes} min
+          </span>
         </div>
 
         {/* Completion banner */}
@@ -109,22 +152,36 @@ export default function LessonPage() {
           />
         )}
 
-        {/* Main layout */}
-        <div className="grid lg:grid-cols-5 gap-8 items-start">
-          {/* ── Left: lesson content ──────────────────────────────────── */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
+        {/* 3/5 + 2/5 layout */}
+        <div
+          style={{
+            display: 'grid',
+            gap: 'var(--space-8)',
+            alignItems: 'start',
+          }}
+          className="lg:grid-cols-5"
+        >
+          {/* ── Left: content ─────────────────────────────────────────── */}
+          <div
+            className="lg:col-span-3"
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
+          >
             {/* Lesson header */}
             <div>
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}>
                 {lesson.skillTags.map(tag => (
                   <SkillTagChip key={tag} tag={tag} />
                 ))}
                 {completed && (
                   <span
-                    className="text-xs px-2.5 py-1 font-medium"
                     style={{
-                      border: '1px solid var(--cognac)',
-                      color: 'var(--cognac)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 'var(--text-xs)',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: 'var(--color-success)',
+                      border: '1px solid var(--color-success)',
+                      padding: '3px 8px',
                     }}
                   >
                     ✓ Completed
@@ -134,43 +191,58 @@ export default function LessonPage() {
               <h1
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-                  lineHeight: 1.05,
-                  fontWeight: 600,
+                  fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)',
+                  fontWeight: 400,
                   letterSpacing: '-0.02em',
-                  color: 'var(--ink)',
-                  marginBottom: '0.5rem',
+                  lineHeight: 1.1,
+                  color: 'var(--color-text)',
+                  marginBottom: 'var(--space-3)',
                 }}
               >
                 {lesson.title}
               </h1>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-md)' }}>
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-base)',
+                  lineHeight: 1.6,
+                  color: 'var(--color-text-2)',
+                }}
+              >
                 {lesson.subtitle}
               </p>
             </div>
 
             {/* Step progress */}
-            <div>
-              <ProgressBar
-                value={stepProgress}
-                label={`Step ${activeStepIdx + 1} of ${totalSteps}`}
-                showPercentage={false}
-                size="sm"
-                color="forest"
-              />
-            </div>
+            <ProgressBar
+              value={stepProgress}
+              label={`Step ${activeStepIdx + 1} of ${totalSteps}`}
+              size="xs"
+              color="forest"
+            />
 
-            {/* Step tabs */}
-            <div className="flex gap-2 flex-wrap">
+            {/* Step selectors */}
+            <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
               {lesson.steps.map((step, idx) => (
                 <button
                   key={step.id}
                   onClick={() => setActiveStepIdx(idx)}
-                  className="w-8 h-8 flex items-center justify-center text-xs font-medium transition-all duration-200"
                   style={{
-                    background: idx === activeStepIdx ? 'var(--moss)' : 'transparent',
-                    color: idx === activeStepIdx ? 'white' : 'var(--ink-muted)',
-                    border: idx === activeStepIdx ? '1px solid var(--moss)' : '1px solid var(--stone-mid)',
+                    width: '28px',
+                    height: '28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 'var(--text-xs)',
+                    borderRadius: 'var(--radius-sm)',
+                    border: idx === activeStepIdx
+                      ? '1px solid var(--color-text)'
+                      : '1px solid var(--color-border-strong)',
+                    background: idx === activeStepIdx ? 'var(--color-invert)' : 'transparent',
+                    color: idx === activeStepIdx ? 'var(--color-text-inv)' : 'var(--color-text-3)',
+                    cursor: 'pointer',
+                    transition: `background var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease)`,
                   }}
                 >
                   {idx + 1}
@@ -178,52 +250,108 @@ export default function LessonPage() {
               ))}
             </div>
 
-            {/* Active step content */}
+            {/* Active step */}
             <StepContent
               step={lesson.steps[activeStepIdx]}
               value={reflections[lesson.steps[activeStepIdx]?.id] ?? ''}
               onChange={val => handleReflectionChange(lesson.steps[activeStepIdx].id, val)}
             />
 
-            {/* Step navigation */}
-            <div className="flex items-center justify-between gap-4">
+            {/* Step nav */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-4)' }}>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setActiveStepIdx(i => Math.max(0, i - 1))}
                 disabled={activeStepIdx === 0}
               >
-                ← Previous
+                ← Prev
               </Button>
               {activeStepIdx < totalSteps - 1 ? (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => setActiveStepIdx(i => i + 1)}
                 >
-                  Next step →
+                  Next →
                 </Button>
               ) : (
-                <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>
-                  Last step — complete the lesson →
+                <span
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-text-3)',
+                  }}
+                >
+                  Last step
                 </span>
               )}
             </div>
           </div>
 
-          {/* ── Right: interactive panel ──────────────────────────────── */}
-          <div className="lg:col-span-2 flex flex-col gap-5 lg:sticky lg:top-24">
-            {/* Micro-task box */}
-            <div style={{ border: '1px solid var(--stone-mid)', padding: '1.25rem' }}>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm">⚡</span>
-                <h3 className="font-medium text-sm" style={{ color: 'var(--ink)' }}>Quick Task</h3>
+          {/* ── Right: interactive ─────────────────────────────────────── */}
+          <div
+            className="lg:col-span-2 lg:sticky lg:top-20"
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}
+          >
+            {/* Quick task */}
+            <div
+              style={{
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-surface)',
+                padding: 'var(--space-4)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  marginBottom: 'var(--space-3)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    background: 'var(--color-invert)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    color: 'var(--color-text-inv)',
+                    flexShrink: 0,
+                  }}
+                >
+                  ⚡
+                </div>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 500,
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  Quick Task
+                </h3>
               </div>
-              <p className="text-xs leading-relaxed mb-3" style={{ color: 'var(--ink-md)' }}>
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-sm)',
+                  lineHeight: 1.55,
+                  color: 'var(--color-text-2)',
+                  marginBottom: 'var(--space-3)',
+                }}
+              >
                 {lesson.microtask}
               </p>
               <textarea
-                className="nature-textarea mt-1 text-sm"
+                className="nature-textarea"
+                style={{ fontSize: 'var(--text-sm)' }}
                 placeholder="Work through the task here…"
                 rows={3}
                 value={reflections['__microtask__'] ?? ''}
@@ -238,17 +366,29 @@ export default function LessonPage() {
               onChange={handleCtChange}
             />
 
-            {/* Complete button */}
+            {/* Complete / next */}
             {!completed ? (
               <Button variant="primary" size="lg" fullWidth onClick={handleComplete}>
-                Mark lesson complete ✓
+                Mark complete ✓
               </Button>
             ) : (
               <div
-                className="p-4 text-center"
-                style={{ border: '1px solid var(--stone-mid)' }}
+                style={{
+                  border: '1px solid var(--color-border)',
+                  padding: 'var(--space-4)',
+                  textAlign: 'center',
+                }}
               >
-                <p className="text-xs font-medium mb-3" style={{ color: 'var(--cognac)' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-success)',
+                    marginBottom: 'var(--space-3)',
+                  }}
+                >
                   ✓ Lesson completed
                 </p>
                 {nextLesson ? (
@@ -259,7 +399,7 @@ export default function LessonPage() {
                   </Link>
                 ) : (
                   <Link href="/dashboard">
-                    <Button variant="outline" size="md" fullWidth>
+                    <Button variant="secondary" size="md" fullWidth>
                       Back to curriculum
                     </Button>
                   </Link>
@@ -268,7 +408,16 @@ export default function LessonPage() {
             )}
 
             {lesson.nextLessonTeaser && !completed && (
-              <p className="text-xs text-center italic" style={{ color: 'var(--ink-muted)' }}>
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  fontStyle: 'italic',
+                  color: 'var(--color-text-3)',
+                  textAlign: 'center',
+                  lineHeight: 1.5,
+                }}
+              >
                 {lesson.nextLessonTeaser}
               </p>
             )}
@@ -293,44 +442,93 @@ function StepContent({
   if (!step) return null;
 
   const typeConfig: Record<string, { icon: string; label: string }> = {
-    text:       { icon: '📖', label: 'Read' },
-    example:    { icon: '💡', label: 'Example' },
-    task:       { icon: '✏️', label: 'Task' },
-    reflection: { icon: '🪞', label: 'Reflect' },
+    text:       { icon: '▸', label: 'Read' },
+    example:    { icon: '◈', label: 'Example' },
+    task:       { icon: '◻', label: 'Task' },
+    reflection: { icon: '◉', label: 'Reflect' },
   };
 
   const { icon, label } = typeConfig[step.type] ?? typeConfig.text;
 
   return (
-    <div style={{ border: '1px solid var(--stone-mid)', padding: '1.5rem' }}>
-      {/* Step header */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm">{icon}</span>
-        <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{ color: 'var(--ink-muted)' }}>
+    <div
+      style={{
+        border: '1px solid var(--color-border)',
+        background: 'var(--color-surface)',
+        padding: 'var(--space-6)',
+      }}
+    >
+      {/* Step type indicator */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-2)',
+          marginBottom: 'var(--space-4)',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '14px',
+            color: 'var(--color-brand)',
+            lineHeight: 1,
+          }}
+        >
+          {icon}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            letterSpacing: '0.10em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-3)',
+          }}
+        >
           {label}
         </span>
       </div>
 
       <h2
-        className="font-medium mb-4 leading-snug"
-        style={{ fontSize: '1.1rem', color: 'var(--ink)' }}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--text-lg)',
+          fontWeight: 400,
+          letterSpacing: '-0.01em',
+          lineHeight: 1.2,
+          color: 'var(--color-text)',
+          marginBottom: 'var(--space-4)',
+        }}
       >
         {step.title}
       </h2>
 
-      <div className="flex flex-col gap-2">
+      {/* Content */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
         {step.content.split('\n').map((line, i) => {
-          if (!line.trim()) return <div key={i} className="h-2" />;
+          if (!line.trim()) return <div key={i} style={{ height: 'var(--space-2)' }} />;
 
           const formatted = line.replace(
             /\*\*(.*?)\*\*/g,
-            '<strong style="font-weight:600;color:var(--ink)">$1</strong>',
+            '<strong style="font-weight:500;color:var(--color-text)">$1</strong>',
           );
 
           if (line.startsWith('• ') || line.startsWith('- ')) {
             return (
-              <div key={i} className="flex items-start gap-2 text-sm" style={{ color: 'var(--ink-md)', lineHeight: '1.6' }}>
-                <span className="mt-1 flex-shrink-0" style={{ color: 'var(--cognac)' }}>–</span>
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 'var(--space-3)',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text-2)',
+                  lineHeight: 1.6,
+                }}
+              >
+                <span style={{ color: 'var(--color-brand)', flexShrink: 0, marginTop: '2px', fontFamily: 'var(--font-mono)', fontSize: '10px' }}>—</span>
                 <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^[•\-] /, '') }} />
               </div>
             );
@@ -339,8 +537,12 @@ function StepContent({
           return (
             <p
               key={i}
-              className="text-sm"
-              style={{ color: 'var(--ink-md)', lineHeight: '1.65' }}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-sm)',
+                lineHeight: 1.65,
+                color: 'var(--color-text-2)',
+              }}
               dangerouslySetInnerHTML={{ __html: formatted }}
             />
           );
@@ -349,7 +551,8 @@ function StepContent({
 
       {(step.type === 'task' || step.type === 'reflection') && (
         <textarea
-          className="nature-textarea mt-5"
+          className="nature-textarea"
+          style={{ marginTop: 'var(--space-6)' }}
           rows={5}
           placeholder={step.placeholder ?? 'Write your thoughts here…'}
           value={value}
@@ -373,21 +576,39 @@ function CompletionBanner({
 }) {
   return (
     <div
-      className="mb-8 flex items-center justify-between gap-4 p-5"
-      style={{ background: 'var(--moss)', color: 'white' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 'var(--space-4)',
+        padding: 'var(--space-4) var(--space-6)',
+        background: 'var(--color-surface-3)',
+        marginBottom: 'var(--space-6)',
+      }}
     >
       <div>
-        <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
+        <div
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            letterSpacing: '0.10em',
+            textTransform: 'uppercase',
+            color: 'rgba(245,242,237,0.45)',
+            marginBottom: 'var(--space-1)',
+          }}
+        >
           Lesson complete
+        </div>
+        <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-base)', fontWeight: 400, color: 'var(--color-text-inv)' }}>
+          {lessonTitle}
         </p>
-        <p className="font-medium text-sm">{lessonTitle}</p>
         {nextLesson && (
-          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-xs)', color: 'rgba(245,242,237,0.5)', marginTop: '2px' }}>
             Up next: Day {nextLesson.day} — {nextLesson.title}
           </p>
         )}
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexShrink: 0 }}>
         {nextLesson && (
           <Link href={`/lesson/${nextLesson.id}`}>
             <Button variant="amber" size="sm">Continue →</Button>
@@ -395,8 +616,17 @@ function CompletionBanner({
         )}
         <button
           onClick={onDismiss}
-          className="text-xl leading-none hover:opacity-60 transition-opacity"
-          style={{ color: 'rgba(255,255,255,0.5)' }}
+          style={{
+            color: 'rgba(245,242,237,0.4)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '18px',
+            lineHeight: 1,
+            transition: `color var(--duration-fast) var(--ease)`,
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(245,242,237,0.8)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(245,242,237,0.4)'; }}
         >
           ×
         </button>

@@ -25,82 +25,157 @@ export default function DashboardPage() {
   ).length;
   const totalCount = lessons.length;
   const nextLesson = getRecommendedLesson(progress.completedLessons);
+  const pct = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="min-h-screen pt-20 pb-24" style={{ background: 'var(--stone)', color: 'var(--ink)' }}>
-      <div className="max-w-4xl mx-auto px-8 sm:px-14">
-
-        {/* ── Page header ────────────────────────────────────────────── */}
-        <div className="pt-8 pb-10" style={{ borderBottom: '1px solid var(--stone-mid)' }}>
-          <p className="text-xs font-medium tracking-[0.3em] uppercase mb-3" style={{ color: 'var(--cognac)' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
+        paddingTop: '52px', // nav height
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: 'var(--space-12) var(--space-4)',
+        }}
+      >
+        {/* ── Page header ────────────────────────────────────────────────── */}
+        <div
+          style={{
+            paddingBottom: 'var(--space-8)',
+            marginBottom: 'var(--space-8)',
+            borderBottom: '1px solid var(--color-border)',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--color-brand)',
+              marginBottom: 'var(--space-3)',
+            }}
+          >
             Your curriculum
-          </p>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-4)',
+            }}
+            className="sm:flex-row sm:items-end sm:justify-between"
+          >
             <h1
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                lineHeight: 1.0,
-                fontWeight: 600,
+                fontWeight: 400,
                 letterSpacing: '-0.02em',
-                color: 'var(--ink)',
+                lineHeight: 1.0,
+                color: 'var(--color-text)',
               }}
             >
               {completedCount === 0
-                ? <>Your <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>journey</em> begins.</>
+                ? <>Your <em style={{ fontStyle: 'italic', color: 'var(--color-brand)' }}>journey</em> begins.</>
                 : completedCount === totalCount
-                ? <>Journey <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>complete.</em></>
-                : <>Day {completedCount + 1} <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>awaits.</em></>
+                ? <>Journey <em style={{ fontStyle: 'italic', color: 'var(--color-brand)' }}>complete.</em></>
+                : <>Day {completedCount + 1} <em style={{ fontStyle: 'italic', color: 'var(--color-brand)' }}>awaits.</em></>
               }
             </h1>
 
-            {/* Progress fraction */}
-            <div className="flex items-end gap-4 flex-shrink-0">
-              <div className="text-right">
+            {/* Progress block */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: 'var(--space-4)',
+                flexShrink: 0,
+              }}
+            >
+              <div>
                 <div
                   style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: '2.5rem',
-                    fontWeight: 600,
+                    fontSize: '3rem',
+                    fontWeight: 400,
                     lineHeight: 1,
-                    color: 'var(--ink)',
+                    color: 'var(--color-text)',
                   }}
                 >
-                  {completedCount}<span style={{ color: 'var(--stone-dk)', fontSize: '1.5rem' }}>/{totalCount}</span>
+                  {completedCount}
+                  <span style={{ fontSize: '1.5rem', color: 'var(--color-text-3)' }}>/{totalCount}</span>
                 </div>
-                <div className="text-xs tracking-wider mt-1" style={{ color: 'var(--ink-muted)' }}>
-                  lessons complete
+                <div
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-text-3)',
+                    marginTop: '4px',
+                  }}
+                >
+                  Complete
                 </div>
               </div>
-              {/* Thin progress bar */}
-              <div className="w-24 mb-3">
-                <div className="h-px w-full" style={{ background: 'var(--stone-mid)' }}>
-                  <div
-                    className="h-px transition-all duration-700"
-                    style={{
-                      width: `${Math.round((completedCount / totalCount) * 100)}%`,
-                      background: 'var(--cognac)',
-                    }}
-                  />
-                </div>
+              {/* Thin vertical progress */}
+              <div
+                style={{
+                  width: '2px',
+                  height: '56px',
+                  background: 'var(--color-border)',
+                  marginBottom: '20px',
+                  position: 'relative',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '2px',
+                    height: `${pct}%`,
+                    background: 'var(--color-brand)',
+                    transition: 'height 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                  }}
+                />
               </div>
             </div>
           </div>
 
-          {/* Goals pills */}
+          {/* Goals */}
           {goals.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-5">
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 'var(--space-2)',
+                marginTop: 'var(--space-4)',
+              }}
+            >
               {goals.map(g => (
                 <span
                   key={g.id}
-                  className="flex items-center gap-1.5 text-xs"
                   style={{
-                    padding: '4px 12px',
-                    border: '1px solid var(--stone-mid)',
-                    color: 'var(--ink-md)',
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-text-2)',
+                    border: '1px solid var(--color-border)',
+                    padding: '3px 8px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
                   }}
                 >
-                  <span>{g.icon}</span>
                   {g.label}
                 </span>
               ))}
@@ -108,33 +183,81 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* ── Next up banner ──────────────────────────────────────────── */}
-        {nextLesson && completedCount > 0 && (
-          <Link href={`/lesson/${nextLesson.id}`} className="block mt-8">
+        {/* ── Next up / Start banner ──────────────────────────────────────── */}
+        {nextLesson && (
+          <Link
+            href={`/lesson/${nextLesson.id}`}
+            style={{ display: 'block', textDecoration: 'none', marginBottom: 'var(--space-8)' }}
+          >
             <div
-              className="flex items-center justify-between gap-4 p-6 transition-opacity duration-200 hover:opacity-80"
-              style={{ background: 'var(--moss)', color: 'white' }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 'var(--space-4)',
+                padding: 'var(--space-6)',
+                background: 'var(--color-surface-3)',
+                transition: `opacity var(--duration-fast) var(--ease)`,
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.opacity = '0.85'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.opacity = '1'; }}
             >
               <div>
-                <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Up next
-                </p>
-                <h3 className="font-medium text-base">
+                <div
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(245,242,237,0.4)',
+                    marginBottom: 'var(--space-2)',
+                  }}
+                >
+                  {completedCount === 0 ? 'Start here' : 'Up next'}
+                </div>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'var(--text-lg)',
+                    fontWeight: 400,
+                    letterSpacing: '-0.01em',
+                    color: 'var(--color-text-inv)',
+                  }}
+                >
                   Day {nextLesson.day} — {nextLesson.title}
                 </h3>
-                <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-sm)',
+                    color: 'rgba(245,242,237,0.55)',
+                    marginTop: '4px',
+                  }}
+                >
                   {nextLesson.subtitle}
                 </p>
               </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flexShrink: 0 }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 'var(--text-xs)',
+                    color: 'rgba(245,242,237,0.4)',
+                  }}
+                >
                   {nextLesson.estimatedMinutes} min
                 </span>
                 <div
-                  className="w-9 h-9 flex items-center justify-center"
-                  style={{ border: '1px solid rgba(255,255,255,0.25)' }}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid rgba(245,242,237,0.2)',
+                  }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--color-text-inv)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 8h10M9 4l4 4-4 4" />
                   </svg>
                 </div>
@@ -143,78 +266,88 @@ export default function DashboardPage() {
           </Link>
         )}
 
-        {/* First lesson prompt when nothing completed */}
-        {completedCount === 0 && nextLesson && (
-          <Link href={`/lesson/${nextLesson.id}`} className="block mt-8">
-            <div
-              className="flex items-center justify-between gap-4 p-6 transition-opacity duration-200 hover:opacity-80"
-              style={{ background: 'var(--moss)', color: 'white' }}
-            >
-              <div>
-                <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Start here
-                </p>
-                <h3 className="font-medium text-base">
-                  Day {nextLesson.day} — {nextLesson.title}
-                </h3>
-                <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  {nextLesson.subtitle}
-                </p>
-              </div>
-              <div
-                className="w-9 h-9 flex items-center justify-center flex-shrink-0"
-                style={{ border: '1px solid rgba(255,255,255,0.25)' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 8h10M9 4l4 4-4 4" />
-                </svg>
-              </div>
-            </div>
-          </Link>
-        )}
-
-        {/* ── Lesson list ─────────────────────────────────────────────── */}
-        <div className="mt-10">
-          <p className="text-xs font-medium tracking-[0.25em] uppercase mb-6" style={{ color: 'var(--ink-muted)' }}>
-            All 7 lessons
-          </p>
-
-          <div className="flex flex-col" style={{ gap: '1px', background: 'var(--stone-mid)' }}>
-            {lessons.map((lesson, idx) => {
-              const isCompleted = progress.completedLessons.includes(lesson.id);
-              const isLocked = !isCompleted && idx > completedCount + 1;
-              const isCurrent = !isCompleted && idx === completedCount;
-
-              return (
-                <LessonRow
-                  key={lesson.id}
-                  lesson={lesson}
-                  isCompleted={isCompleted}
-                  isLocked={isLocked}
-                  isCurrent={isCurrent}
-                />
-              );
-            })}
-          </div>
+        {/* ── Lesson list ─────────────────────────────────────────────────── */}
+        <div
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-xs)',
+            letterSpacing: '0.10em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-3)',
+            marginBottom: 'var(--space-4)',
+          }}
+        >
+          All 7 lessons
         </div>
 
-        {/* Completion state */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1px',
+            background: 'var(--color-border)',
+          }}
+        >
+          {lessons.map((lesson, idx) => {
+            const isCompleted = progress.completedLessons.includes(lesson.id);
+            const isLocked = !isCompleted && idx > completedCount + 1;
+            const isCurrent = !isCompleted && idx === completedCount;
+            return (
+              <LessonRow
+                key={lesson.id}
+                lesson={lesson}
+                isCompleted={isCompleted}
+                isLocked={isLocked}
+                isCurrent={isCurrent}
+              />
+            );
+          })}
+        </div>
+
+        {/* Completion */}
         {completedCount === totalCount && (
-          <div className="mt-12 py-10 text-center" style={{ borderTop: '1px solid var(--stone-mid)' }}>
-            <p className="text-xs tracking-[0.25em] uppercase mb-3" style={{ color: 'var(--cognac)' }}>
+          <div
+            style={{
+              marginTop: 'var(--space-12)',
+              paddingTop: 'var(--space-8)',
+              borderTop: '1px solid var(--color-border)',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--color-brand)',
+                marginBottom: 'var(--space-3)',
+              }}
+            >
               Curriculum complete
-            </p>
+            </div>
             <h3
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '2rem',
-                fontWeight: 600,
-                color: 'var(--ink)',
+                fontSize: 'var(--text-xl)',
+                fontWeight: 400,
+                letterSpacing: '-0.02em',
+                color: 'var(--color-text)',
               }}
             >
               You&rsquo;ve done the work.
             </h3>
-            <p className="text-sm mt-3 max-w-sm mx-auto" style={{ color: 'var(--ink-md)' }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-base)',
+                color: 'var(--color-text-2)',
+                marginTop: 'var(--space-3)',
+                maxWidth: '36ch',
+                margin: 'var(--space-3) auto 0',
+                lineHeight: 1.6,
+              }}
+            >
               Return to any lesson to review or deepen your practice.
             </p>
           </div>
@@ -237,81 +370,132 @@ function LessonRow({
   isLocked: boolean;
   isCurrent: boolean;
 }) {
-  const content = (
+  const inner = (
     <div
-      className="flex items-center gap-6 px-6 py-5 transition-colors duration-150"
       style={{
-        background: isCompleted
-          ? 'rgba(184,116,46,0.03)'
-          : isCurrent
-          ? 'var(--stone-lt, #f5f2ed)'
-          : 'var(--stone)',
-        opacity: isLocked ? 0.4 : 1,
-        cursor: isLocked ? 'default' : 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--space-4)',
+        padding: 'var(--space-4) var(--space-6)',
+        background: isCurrent ? 'var(--color-surface)' : 'var(--color-bg)',
+        opacity: isLocked ? 0.35 : 1,
+        transition: `background var(--duration-fast) var(--ease)`,
       }}
     >
-      {/* Day indicator */}
+      {/* Day square */}
       <div
-        className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-xs font-medium"
         style={{
-          border: isCompleted
-            ? '1px solid var(--cognac)'
-            : '1px solid var(--stone-mid)',
-          color: isCompleted ? 'var(--cognac)' : 'var(--ink-muted)',
+          flexShrink: 0,
+          width: '30px',
+          height: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: 'var(--font-mono)',
+          fontSize: 'var(--text-xs)',
+          borderRadius: 'var(--radius-sm)',
+          border: isCompleted ? '1px solid var(--color-text)' : '1px solid var(--color-border-strong)',
+          background: isCompleted ? 'var(--color-invert)' : 'transparent',
+          color: isCompleted ? 'var(--color-text-inv)' : 'var(--color-text-3)',
         }}
       >
         {isCompleted ? '✓' : lesson.day}
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <h3
-          className="font-medium text-sm leading-snug"
-          style={{ color: isLocked ? 'var(--ink-muted)' : 'var(--ink)' }}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'var(--text-base)',
+            fontWeight: 400,
+            letterSpacing: '-0.01em',
+            color: isLocked ? 'var(--color-text-3)' : 'var(--color-text)',
+            lineHeight: 1.2,
+          }}
         >
           {lesson.title}
-        </h3>
-        <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--ink-muted)' }}>
+        </div>
+        <div
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--color-text-3)',
+            marginTop: '2px',
+          }}
+          className="truncate"
+        >
           {lesson.subtitle}
-        </p>
+        </div>
       </div>
 
       {/* Meta */}
-      <div className="flex-shrink-0 flex items-center gap-4">
-        <span className="text-xs hidden sm:block" style={{ color: 'var(--ink-muted)' }}>
-          {lesson.estimatedMinutes} min
+      <div
+        style={{
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-4)',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'var(--text-xs)',
+            color: 'var(--color-text-3)',
+          }}
+          className="hidden sm:inline"
+        >
+          {lesson.estimatedMinutes}m
         </span>
         {isCurrent && (
           <span
-            className="text-xs font-medium tracking-wide hidden sm:block"
-            style={{ color: 'var(--cognac)' }}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--color-brand)',
+            }}
+            className="hidden sm:inline"
           >
             Start →
           </span>
         )}
         {isCompleted && (
           <span
-            className="text-xs tracking-wide hidden sm:block"
-            style={{ color: 'var(--cognac)' }}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-3)',
+            }}
+            className="hidden sm:inline"
           >
             Review →
           </span>
-        )}
-        {isLocked && (
-          <span className="text-xs" style={{ color: 'var(--stone-dk)' }}>🔒</span>
         )}
       </div>
     </div>
   );
 
-  if (isLocked) return <div>{content}</div>;
+  if (isLocked) return <div>{inner}</div>;
 
   return (
     <Link
       href={`/lesson/${lesson.id}`}
-      className="block hover:brightness-[0.97] transition-all duration-150"
+      style={{ display: 'block', textDecoration: 'none' }}
+      onMouseEnter={e => {
+        const el = e.currentTarget.firstElementChild as HTMLElement;
+        if (el) el.style.background = 'var(--color-surface)';
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget.firstElementChild as HTMLElement;
+        if (el) el.style.background = isCurrent ? 'var(--color-surface)' : 'var(--color-bg)';
+      }}
     >
-      {content}
+      {inner}
     </Link>
   );
 }

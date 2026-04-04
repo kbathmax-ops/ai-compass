@@ -4,12 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import {
-  getLessons,
-  getGoals,
-  getRecommendedLesson,
-  SKILL_TAG_LABELS,
-} from '@/data/lessons';
+import { getLessons, getGoals, getRecommendedLesson } from '@/data/lessons';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { SkillTagChip } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
@@ -32,162 +27,332 @@ export default function ProfilePage() {
   const completedCount = completedLessons.length;
   const totalCount = lessons.length;
   const progressPercent = Math.round((completedCount / totalCount) * 100);
-
   const nextLesson = getRecommendedLesson(progress.completedLessons);
+  const totalMinutes = completedLessons.reduce((sum, l) => sum + l.estimatedMinutes, 0);
 
   const skillsMap: Record<string, number> = {};
   completedLessons.forEach(l =>
-    l.skillTags.forEach(tag => {
-      skillsMap[tag] = (skillsMap[tag] ?? 0) + 1;
-    }),
+    l.skillTags.forEach(tag => { skillsMap[tag] = (skillsMap[tag] ?? 0) + 1; }),
   );
   const topSkills = Object.entries(skillsMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([tag]) => tag as SkillTag);
 
-  const totalMinutes = completedLessons.reduce((sum, l) => sum + l.estimatedMinutes, 0);
+  const stats = [
+    { value: completedCount.toString(), label: 'Lessons', sub: `of ${totalCount}` },
+    { value: progress.streak > 0 ? `${progress.streak}` : '—', label: 'Streak', sub: 'days' },
+    { value: `${totalMinutes}`, label: 'Minutes', sub: 'hands-on' },
+    { value: topSkills.length > 0 ? `${topSkills.length}` : '0', label: 'Skills', sub: 'practiced' },
+  ];
 
   return (
-    <div className="min-h-screen pt-20 pb-28" style={{ background: 'var(--stone)', color: 'var(--ink)' }}>
-      <div className="max-w-3xl mx-auto px-8 sm:px-14">
-
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
+        paddingTop: '52px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: 'var(--space-12) var(--space-4) var(--space-16)',
+        }}
+      >
         {/* Header */}
-        <div className="pt-8 pb-10" style={{ borderBottom: '1px solid var(--stone-mid)' }}>
-          <p className="text-xs font-medium tracking-[0.3em] uppercase mb-3" style={{ color: 'var(--cognac)' }}>
+        <div
+          style={{
+            paddingBottom: 'var(--space-8)',
+            marginBottom: 'var(--space-8)',
+            borderBottom: '1px solid var(--color-border)',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--color-brand)',
+              marginBottom: 'var(--space-3)',
+            }}
+          >
             Your progress
-          </p>
+          </div>
           <h1
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              lineHeight: 1.0,
-              fontWeight: 600,
+              fontWeight: 400,
               letterSpacing: '-0.02em',
-              color: 'var(--ink)',
+              lineHeight: 1.0,
+              color: 'var(--color-text)',
             }}
           >
-            AI Compass <em style={{ fontStyle: 'italic', color: 'var(--cognac)' }}>profile.</em>
+            AI Compass <em style={{ fontStyle: 'italic', color: 'var(--color-brand)' }}>profile.</em>
           </h1>
         </div>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mt-px" style={{ background: 'var(--stone-mid)' }}>
-          {[
-            { value: completedCount.toString(), label: 'Lessons done', sub: `of ${totalCount}`, icon: '📚' },
-            { value: progress.streak > 0 ? `${progress.streak}` : '—', label: 'Day streak', sub: 'keep it up', icon: '🔥' },
-            { value: `${totalMinutes}`, label: 'Minutes learned', sub: 'hands-on', icon: '⏱' },
-            { value: topSkills.length > 0 ? `${topSkills.length}` : '0', label: 'Skills', sub: 'and counting', icon: '🧠' },
-          ].map(({ value, label, sub, icon }) => (
+        {/* Stats grid — hairline-bordered cells */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '1px',
+            background: 'var(--color-border)',
+            marginBottom: 'var(--space-8)',
+          }}
+          className="grid-cols-2 sm:grid-cols-4"
+        >
+          {stats.map(({ value, label, sub }) => (
             <div
               key={label}
-              className="px-5 py-6 flex flex-col gap-1"
-              style={{ background: 'var(--stone)' }}
+              style={{
+                padding: 'var(--space-6)',
+                background: 'var(--color-bg)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'var(--space-1)',
+              }}
             >
-              <span className="text-lg">{icon}</span>
-              <span
+              <div
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '1.8rem',
-                  fontWeight: 600,
+                  fontSize: '2.5rem',
+                  fontWeight: 400,
                   lineHeight: 1,
-                  color: 'var(--ink)',
+                  color: 'var(--color-text)',
                 }}
               >
                 {value}
-              </span>
-              <span className="text-xs font-medium" style={{ color: 'var(--ink-md)' }}>{label}</span>
-              <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>{sub}</span>
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-text-2)',
+                }}
+              >
+                {label}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--color-text-3)',
+                }}
+              >
+                {sub}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Progress overview */}
-        <div className="mt-8 p-6" style={{ border: '1px solid var(--stone-mid)' }}>
-          <div className="flex items-center justify-between mb-5">
+        {/* Progress section */}
+        <div
+          style={{
+            border: '1px solid var(--color-border)',
+            background: 'var(--color-surface)',
+            padding: 'var(--space-6)',
+            marginBottom: 'var(--space-6)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-6)' }}>
             <div>
-              <h2 className="font-medium text-base" style={{ color: 'var(--ink)' }}>Curriculum Progress</h2>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--ink-muted)' }}>Small Business Owner track</p>
+              <div
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-xs)',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--color-text-3)',
+                  marginBottom: 'var(--space-1)',
+                }}
+              >
+                Curriculum
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'var(--text-lg)',
+                  fontWeight: 400,
+                  color: 'var(--color-text)',
+                }}
+              >
+                {progressPercent}% complete
+              </div>
             </div>
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '2rem',
-                fontWeight: 600,
-                color: 'var(--cognac)',
-              }}
-            >
-              {progressPercent}%
-            </span>
-          </div>
-
-          <ProgressBar value={progressPercent} showPercentage={false} size="sm" color="forest" className="mb-5" />
-
-          <div className="flex gap-2 flex-wrap">
-            {lessons.map(l => {
-              const done = progress.completedLessons.includes(l.id);
-              return (
-                <div key={l.id} className="flex flex-col items-center gap-1">
+            <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
+              {lessons.map(l => {
+                const done = progress.completedLessons.includes(l.id);
+                return (
                   <div
-                    className="w-7 h-7 flex items-center justify-center text-xs font-medium"
+                    key={l.id}
                     style={{
-                      border: done ? '1px solid var(--cognac)' : '1px solid var(--stone-mid)',
-                      color: done ? 'var(--cognac)' : 'var(--ink-muted)',
+                      width: '28px',
+                      height: '28px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 'var(--text-xs)',
+                      border: done ? '1px solid var(--color-text)' : '1px solid var(--color-border-strong)',
+                      background: done ? 'var(--color-invert)' : 'transparent',
+                      color: done ? 'var(--color-text-inv)' : 'var(--color-text-3)',
+                      borderRadius: 'var(--radius-sm)',
                     }}
+                    title={`Day ${l.day}: ${l.title}`}
                   >
                     {done ? '✓' : l.day}
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+
+          <ProgressBar value={progressPercent} showPercentage={false} size="sm" color="forest" />
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6 mt-6">
-          {/* Goals */}
-          <div className="p-6" style={{ border: '1px solid var(--stone-mid)' }}>
-            <h2 className="font-medium text-sm mb-4" style={{ color: 'var(--ink)' }}>Your Goals</h2>
+        {/* Two-col bottom */}
+        <div
+          style={{
+            display: 'grid',
+            gap: 'var(--space-6)',
+          }}
+          className="sm:grid-cols-2"
+        >
+          {/* Goals + skills */}
+          <div
+            style={{
+              border: '1px solid var(--color-border)',
+              background: 'var(--color-surface)',
+              padding: 'var(--space-6)',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--color-text-3)',
+                marginBottom: 'var(--space-4)',
+              }}
+            >
+              Goals
+            </div>
             {goals.length > 0 ? (
-              <div className="flex flex-col gap-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
                 {goals.map(g => (
-                  <div key={g.id} className="flex items-center gap-2 text-sm" style={{ color: 'var(--ink-md)' }}>
-                    <span className="text-base">{g.icon}</span>
+                  <div
+                    key={g.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--color-text-2)',
+                    }}
+                  >
+                    <span style={{ fontSize: '15px' }}>{g.icon}</span>
                     {g.label}
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>No goals selected.</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'var(--color-text-3)', marginBottom: 'var(--space-6)', fontStyle: 'italic' }}>
+                No goals selected.
+              </p>
             )}
 
             {topSkills.length > 0 && (
-              <div className="mt-5">
-                <h3 className="text-xs font-medium tracking-wider uppercase mb-2" style={{ color: 'var(--ink-muted)' }}>
+              <>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-xs)',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-text-3)',
+                    marginBottom: 'var(--space-3)',
+                  }}
+                >
                   Skills Practiced
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
                   {topSkills.map(tag => (
-                    <SkillTagChip key={tag} tag={tag} size="xs" />
+                    <SkillTagChip key={tag} tag={tag} />
                   ))}
                 </div>
-              </div>
+              </>
+            )}
+
+            {topSkills.length === 0 && (
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text-3)',
+                  fontStyle: 'italic',
+                }}
+              >
+                Complete a lesson to start building skills.
+              </p>
             )}
           </div>
 
           {/* Recommended next */}
           <div
-            className="p-6 flex flex-col"
-            style={{ background: 'var(--moss)', color: 'white' }}
+            style={{
+              background: 'var(--color-surface-3)',
+              padding: 'var(--space-6)',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
           >
-            <p className="text-xs tracking-[0.2em] uppercase mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <div
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                letterSpacing: '0.10em',
+                textTransform: 'uppercase',
+                color: 'rgba(245,242,237,0.4)',
+                marginBottom: 'var(--space-4)',
+              }}
+            >
               Recommended next
-            </p>
+            </div>
             {nextLesson ? (
               <>
-                <h3 className="font-medium text-sm mb-1">
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'var(--text-lg)',
+                    fontWeight: 400,
+                    letterSpacing: '-0.01em',
+                    color: 'var(--color-text-inv)',
+                    marginBottom: 'var(--space-2)',
+                    lineHeight: 1.2,
+                  }}
+                >
                   Day {nextLesson.day}: {nextLesson.title}
                 </h3>
-                <p className="text-xs mb-5 flex-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'var(--text-sm)',
+                    color: 'rgba(245,242,237,0.55)',
+                    flex: 1,
+                    lineHeight: 1.5,
+                    marginBottom: 'var(--space-6)',
+                  }}
+                >
                   {nextLesson.subtitle}
                 </p>
                 <Link href={`/lesson/${nextLesson.id}`}>
@@ -198,12 +363,19 @@ export default function ProfilePage() {
               </>
             ) : (
               <>
-                <p className="font-medium text-sm mb-1">All lessons complete!</p>
-                <p className="text-xs mb-5 flex-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-lg)', fontWeight: 400, color: 'var(--color-text-inv)', marginBottom: 'var(--space-2)' }}>
+                  All lessons complete.
+                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-sm)', color: 'rgba(245,242,237,0.5)', flex: 1, marginBottom: 'var(--space-6)' }}>
                   Review any lesson or reset to start fresh.
                 </p>
                 <Link href="/dashboard">
-                  <Button variant="outline" size="sm" fullWidth style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'white' }}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    fullWidth
+                    style={{ borderColor: 'rgba(245,242,237,0.3)', color: 'var(--color-text-inv)' }}
+                  >
                     Review curriculum
                   </Button>
                 </Link>
@@ -213,9 +385,23 @@ export default function ProfilePage() {
         </div>
 
         {/* Reset */}
-        <div className="mt-10 text-center pb-4">
-          <p className="text-xs mb-3" style={{ color: 'var(--ink-muted)' }}>
-            Want to start over with fresh progress?
+        <div
+          style={{
+            marginTop: 'var(--space-12)',
+            textAlign: 'center',
+            paddingTop: 'var(--space-8)',
+            borderTop: '1px solid var(--color-border)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              color: 'var(--color-text-3)',
+              marginBottom: 'var(--space-3)',
+            }}
+          >
+            Want to start over?
           </p>
           <button
             onClick={() => {
@@ -224,8 +410,21 @@ export default function ProfilePage() {
                 router.push('/');
               }
             }}
-            className="text-xs hover:opacity-70 transition-opacity underline underline-offset-2"
-            style={{ color: 'var(--ink-muted)' }}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-xs)',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-3)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              textUnderlineOffset: '3px',
+              transition: `color var(--duration-fast) var(--ease)`,
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-brand)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-3)'; }}
           >
             Reset all progress
           </button>
