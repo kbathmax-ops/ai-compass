@@ -9,7 +9,7 @@ export default function LandingPage() {
 
   function handleStart() {
     setRole('smb');
-    router.push('/goals');
+    router.push('/onboarding');
   }
 
   return (

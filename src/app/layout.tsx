@@ -1,15 +1,37 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 import { Navigation } from '@/components/layout/Navigation';
+import { PWAProvider } from '@/components/PWAProvider';
 
 export const metadata: Metadata = {
   title: 'AI Compass — Learn AI for Business',
   description:
-    'A practical AI learning course for small business owners. Build real skills, not just hype.',
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◎</text></svg>",
+    'Master AI in 7 days. Practical lessons built for small business owners — with the critical thinking to use it wisely.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'AI Compass',
+    statusBarStyle: 'black-translucent',
   },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-touch-icon.svg',
+    shortcut: '/icon.svg',
+  },
+  other: {
+    // iOS: makes the status bar match the dark nav when installed
+    'mobile-web-app-capable': 'yes',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#111009',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover', // handles iPhone notch / home indicator
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProvider>
           <Navigation />
           <main>{children}</main>
+          <PWAProvider />
         </AppProvider>
       </body>
     </html>

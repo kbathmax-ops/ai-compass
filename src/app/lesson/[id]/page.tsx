@@ -26,6 +26,8 @@ export default function LessonPage() {
   const [activeStepIdx, setActiveStepIdx] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
+  // Mobile: which panel is active — 'read' | 'practice'
+  const [mobilePanel, setMobilePanel] = useState<'read' | 'practice'>('read');
 
   const isAlreadyDone = progress.completedLessons.includes(lessonId);
 
@@ -152,6 +154,43 @@ export default function LessonPage() {
           />
         )}
 
+        {/* Mobile tab switcher — hidden on desktop */}
+        <div
+          className="lg:hidden"
+          style={{
+            display: 'flex',
+            marginBottom: 'var(--space-6)',
+            borderBottom: '1px solid var(--color-border)',
+          }}
+        >
+          {(['read', 'practice'] as const).map(panel => (
+            <button
+              key={panel}
+              onClick={() => setMobilePanel(panel)}
+              style={{
+                flex: 1,
+                padding: 'var(--space-3) 0',
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: mobilePanel === panel ? 500 : 400,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: mobilePanel === panel ? 'var(--color-text)' : 'var(--color-text-3)',
+                background: 'none',
+                border: 'none',
+                borderBottom: mobilePanel === panel
+                  ? '2px solid var(--color-text)'
+                  : '2px solid transparent',
+                marginBottom: '-1px',
+                cursor: 'pointer',
+                transition: `color var(--duration-fast) var(--ease)`,
+              }}
+            >
+              {panel === 'read' ? 'Lesson' : 'Practice'}
+            </button>
+          ))}
+        </div>
+
         {/* 3/5 + 2/5 layout */}
         <div
           style={{
@@ -163,8 +202,8 @@ export default function LessonPage() {
         >
           {/* ── Left: content ─────────────────────────────────────────── */}
           <div
-            className="lg:col-span-3"
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}
+            className={`lg:col-span-3 ${mobilePanel !== 'read' ? 'hidden lg:flex' : 'flex'} flex-col`}
+            style={{ gap: 'var(--space-6)' }}
           >
             {/* Lesson header */}
             <div>
@@ -293,8 +332,8 @@ export default function LessonPage() {
 
           {/* ── Right: interactive ─────────────────────────────────────── */}
           <div
-            className="lg:col-span-2 lg:sticky lg:top-20"
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}
+            className={`lg:col-span-2 lg:sticky lg:top-20 ${mobilePanel !== 'practice' ? 'hidden lg:flex' : 'flex'} flex-col`}
+            style={{ gap: 'var(--space-4)' }}
           >
             {/* Quick task */}
             <div
